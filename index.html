@@ -11,36 +11,48 @@
 </head>
 
 <body>
-    <div id="search-bar"></div>
+    <form id="search-bar">
+        <input id="search-box">
+        <button id="search-button">Search</button>
+    </form>
 
     <!-- Character image API here -->
     <div id="character-display-page">
         <img id="character-image">
-        <button id="news-btn"></button>
-        <button id="appearances-btn"></button>
-        <button id="origin-btn"></button>
-        <button id="rt-btn"></button>
+        <button id="news-btn">Character News</button>
+        <button id="appearances-btn">Media Appearances</button>
+        <button id="origin-btn">Origin Story</button>
+        <button id="rt-btn">Rotten Tomatoes Reviews</button>
+        <button id="back-to-search">Back</button>
     </div>
 
     <div id="character-news">
         <h1>News</h1>
         <!-- News API here -->
+        <button class="back-to-character"></button>
     </div>
 
     <div id="media-appearances">
         <h1>Media Appearances</h1>
         <!-- Media API here -->
+        <button class="back-to-character"></button>
     </div>
 
     <div id="origin-stories">
         <h1>Origin Stories</h1>
         <!-- Origins API here -->
+        <button class="back-to-character"></button>
     </div>
 
     <div id="rt-reviews">
         <h1>Rotten Tomatoes Reviews</h1>
         <!-- RT reviews API here -->
+        <button class="back-to-character"></button>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="assets/js/script.js"></script>
+
+
 </body>
 
 </html>
