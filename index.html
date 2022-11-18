@@ -6,21 +6,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/style.css">
     <title>Marvel Geeks Fandom Page</title>
 </head>
 
 <body>
-    <div id="search-bar"></div>
+    <header class="hero">
+        <nav>
+            <ul>
+               <li><a href="#about">News</a></li> 
+               <li><a href="#skills">Media Appearances</a></li> 
+               <li><a href='#projects'>Origin Stories</a></li>
+               <li><a href='#contact'>Rotten Tomatoes Reviews</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <form action="" class="search-bar">
+            <input type="text" placeholder="Search your favorite hero!" name="q">
+            <button type="submit"><img src="./assets/images/Search-Button.png"></button>
+        </form>
+    </div>
 
     <!-- Character image API here -->
-    <div id="character-display-page">
-        <img id="character-image">
-        <button id="news-btn"></button>
-        <button id="appearances-btn"></button>
-        <button id="origin-btn"></button>
-        <button id="rt-btn"></button>
-    </div>
 
     <div id="character-news">
         <h1>News</h1>
@@ -41,6 +49,7 @@
         <h1>Rotten Tomatoes Reviews</h1>
         <!-- RT reviews API here -->
     </div>
+    <script src="./assets/js/script.js"></script>
 </body>
 
 </html>
