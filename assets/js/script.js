@@ -1,6 +1,7 @@
 var characterInputEl = document.querySelector('#search-box');
 var searchButton = document.querySelector('#search-btn');
-var searchFormEl = document.querySelector('#search-form')
+var searchFormEl = document.querySelector('#search-form');
+var characterDisplayEl = document.querySelector('#character-photo');
 var characterArray = [];
 
 
@@ -26,14 +27,31 @@ function getCharData(character) {
         // Iterates through second level of arrays
         for (k = 0; k < newArray.length; k++) {
             var charName = newArray[k].name;
-            var charIdNum = newArray[k].id;
             // If value of input equals a character's name in the array
             if (charName.toUpperCase() === character.toUpperCase()) {
-                console.log(charName);
-                console.log(charIdNum);
+                characterDisplayEl.innerHTML = "<h1 class='character-name'>" + charName + "</h1>";
+               
             };
         };
     };
 };
+
+// function appendPhoto () {
+
+
+
+
+//     var thumbnailApi = 'http://gateway.marvel.com/v1/public/characters?ts=1&apikey=1a380943b10a057172bfb3d0c8676926&hash=d756b5220d6651f35ff1e5576f63f362';
+
+
+//     var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&apikey=1a380943b10a057172bfb3d0c8676926&hash=d756b5220d6651f35ff1e5576f63f362';
+//     fetch(marvelApiUrl)
+//         .then(function (response) {
+//             response.json().then(function (allData) {
+//                 // Push all results to array
+//                 characterArray.push(allData.data.results);
+//             })
+//         });
+// }
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
