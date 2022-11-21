@@ -23,16 +23,19 @@ function init() {
 
     // Fetch 100 characters at a time for 16 times (Total # of characters = 1562) 
     for (i = 0; i < limitOffset.length; i++) {
-        var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&apikey=1a380943b10a057172bfb3d0c8676926&hash=d756b5220d6651f35ff1e5576f63f362&' + limitOffset[i];
+        var marvelApiUrl = 
         fetch(marvelApiUrl)
             .then(function (response) {
                 response.json().then(function (allData) {
                     // Push all results to array
                     charactersArray.push(allData.data.results);
+                    console.log(charactersArray.json())
                 })
             });
     }
-    console.log(charactersArray)
+   
+
+    
 };
 
 init();

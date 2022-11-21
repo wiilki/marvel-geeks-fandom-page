@@ -48,17 +48,17 @@ function getCharData(character) {
 };
 
 function appendPhoto(fileExt, pathUrl) {
-
     // Create new api for hero photo
     var thumbnailApi = pathUrl + '/portrait_xlarge.' + fileExt;
     // Create dynamic <img>
     var photo = document.createElement('img');
+    photo.innerHTML = '';
     photo.src = thumbnailApi;
     photo.classList.add("hero-image")
 
     // Render hero image to page
     characterDisplayEl.appendChild(photo);
-
 }
+
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
