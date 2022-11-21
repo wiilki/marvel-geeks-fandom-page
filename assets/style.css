@@ -75,3 +75,17 @@ nav ul li a:hover{
   font-size: 20px;
   color: black;
 }
+
+.character-display-page {
+  text-align: center;
+  font-size: 50px;
+}
+
+.character-name {
+  font-size: 200px;
+  color: rgb(155, 7, 7);
+}
+
+.hero-image {
+  min-width: 500px;
+}

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <header class="hero">
+    <header>
         <nav>
             <ul>
                 <li><a href="#about">News</a></li>
@@ -21,48 +21,37 @@
             </ul>
         </nav>
     </header>
-    <div class="container">
-        <form action="" class="search-bar">
-            <input type="text" placeholder="Search your favorite hero!" name="q">
-            <button type="submit"><img src="./assets/images/Search-Button.png"></button>
-        </form>
+
+    <form id="search-form" class="container">
+        <h2>Search your favorite hero!</h2>
+        <input id="search-box" placeholder="Hero Name Here" class="search-bar">
+        <button id="search-btn" type="submit" src="./assets/images/Search-Button.png">Search</button>
+    </form>
+
+    <div id="character-display" class="character-display-page">
+
+        <div id="character-photo"></div>
+
+        <div id="character-news">
+            <h2>News</h2>
+        </div>
+
+        <div id="media-appearances">
+            <h2>Media Appearances</h2>
+        </div>
+
+        <div id="origin-stories">
+            <h2>Origin Stories</h2>
+        </div>
+
+        <div id="rt-reviews">
+            <h2>Rotten Tomatoes Reviews</h2>
+        </div>
+
     </div>
 
-    <!-- Character image API here -->
-    <div id="search-bar"></div>
-
-    <!-- Character image API here -->
-    <div id="character-display-page">
-        <img id="character-image">
-        <button id="news-btn"></button>
-        <button id="appearances-btn"></button>
-        <button id="origin-btn"></button>
-        <button id="rt-btn"></button>
-    </div>
-
-    <div id="character-news">
-        <h1>News</h1>
-        <!-- News API here -->
-    </div>
-
-    <div id="media-appearances">
-        <h1>Media Appearances</h1>
-        <!-- Media API here -->
-    </div>
-
-    <div id="origin-stories">
-        <h1>Origin Stories</h1>
-        <!-- Origins API here -->
-    </div>
-
-    <div id="rt-reviews">
-        <h1>Rotten Tomatoes Reviews</h1>
-        <!-- RT reviews API here -->
-    </div>
-    <<<<<<< HEAD <script src="./assets/js/script.js">
-        </script>
-        =======
-        >>>>>>> parent of f115a53 (Add JS to navigate through pages)
+    <script src="./assets/js/script.js"></script>
+    <script src="./assets/js/script2.js"></script>
 </body>
 
 </html>
