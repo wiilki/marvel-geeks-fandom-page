@@ -28,11 +28,11 @@ function init() {
             .then(function (response) {
                 response.json().then(function (allData) {
                     // Push all results to array
-                    characterArray.push(allData.data.results);
+                    charactersArray.push(allData.data.results);
                 })
             });
     }
-    console.log(characterArray)
+    console.log(charactersArray)
 };
 
 init();
