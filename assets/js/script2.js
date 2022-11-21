@@ -23,7 +23,7 @@ function init() {
 
     // Fetch 100 characters at a time for 16 times (Total # of characters = 1562) 
     for (i = 0; i < limitOffset.length; i++) {
-        var marvelApiUrl = 
+        var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&apikey=8a50ea148415c227f13a3183c26c5a43&hash=8c8bc7f37ff6595fe957e6b242fd56b4&' + limitOffset[i];;
         fetch(marvelApiUrl)
             .then(function (response) {
                 response.json().then(function (allData) {
