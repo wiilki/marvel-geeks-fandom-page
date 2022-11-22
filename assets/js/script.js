@@ -26,8 +26,8 @@ var formSubmitHandler = function (event) {
 // Match user input to characters name in array
 function getCharData(character) {
     // Iterates through first level of arrays
-    for (j = 0; j < charactersArray.length; j++) {
-        var newArray = charactersArray[j];
+    for (j = 0; j < charactersArray[0].length; j++) {
+        var newArray = charactersArray[0][j];
         // Iterates through second level of arrays
         for (k = 0; k < newArray.length; k++) {
             var charName = newArray[k].name;
