@@ -2,6 +2,8 @@ var characterInputEl = document.querySelector('#search-box');
 var searchButton = document.querySelector('#search-btn');
 var searchFormEl = document.querySelector('#search-form');
 var characterDisplayEl = document.querySelector('#character-photo');
+var reviewsBtn = document.querySelector('#review-btn')
+var reviewsDiv = document.querySelector('#reviews-div');
 var charactersArray = [];
 var characterData = {
     ext: '',
@@ -16,11 +18,13 @@ var formSubmitHandler = function (event) {
     // Blank error message
     if (characterName) {
         getCharData(characterName);
+        getMovieData();
         // Clear input box
         characterInputEl.value = '';
     } else {
         alert("Cannot be blank");
     };
+
 };
 
 // Match user input to characters name in array
@@ -60,5 +64,23 @@ function appendPhoto(fileExt, pathUrl) {
     characterDisplayEl.appendChild(photo);
 }
 
+function getMovieData() {
+   
+    var movieName = "Ironman"
+    // OMDC API URL
+    var omdbApiUrl = "http://www.omdbapi.com/?t=incredible+hulk&apikey=d66cee3f";
+
+    fetch(omdbApiUrl)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+           
+            reviewsDiv.appendChild(data)
+        });
+}
+
+
+ 
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
