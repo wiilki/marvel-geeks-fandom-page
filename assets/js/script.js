@@ -1587,11 +1587,12 @@ var formSubmitHandler = function (event) {
 };
 
 var getHeroId = function (input) {
+
     var characterName = input.toUpperCase();
     for (var i = 0; i < heroIdArray.length; i++) {
-        if (characterName === heroIdArray[i]['hero'].toUpperCase()) {
-            nameDisplay.textContent = characterName
-          
+        if (characterName === heroIdArray[i]["hero"].toUpperCase()) {
+            nameDisplay.textContent = characterName;
+
         }
     }
 }
