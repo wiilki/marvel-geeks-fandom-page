@@ -76,12 +76,12 @@ nav ul li a:hover{
   color: black;
 }
 
-.character-display-page {
+.hero-display-page {
   text-align: center;
   font-size: 50px;
 }
 
-.character-name {
+.hero-name {
   font-size: 200px;
   color: rgb(155, 7, 7);
 }
