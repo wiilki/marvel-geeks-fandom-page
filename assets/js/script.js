@@ -1605,7 +1605,7 @@ var getHeroId = function (input) {
 
 // Fetch hero photo from API
 var renderHeroImg = function (heroId) {
-    var heroApiUrl = "http://gateway.marvel.com/v1/public/characters/" + heroId + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash;
+    var heroApiUrl = "https://gateway.marvel.com/v1/public/characters/" + heroId + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash;
 
     // Create <img> then assign API Url to image source
     fetch(heroApiUrl)
@@ -1682,7 +1682,7 @@ function getMovieData(heroName) {
     // API requires "+" symbol where spaces would be
     var movieName = heroName.replace(/\s/g, '+');
     // OMDC API URL
-    var omdbApiUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + omdbApiKey;
+    var omdbApiUrl = "https://www.omdbapi.com/?t=" + movieName + "&apikey=" + omdbApiKey;
 
     fetch(omdbApiUrl)
         .then(function (response) {
