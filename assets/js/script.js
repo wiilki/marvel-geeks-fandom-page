@@ -1605,7 +1605,7 @@ var getHeroId = function (input) {
 
 // Fetch hero photo from API
 var renderHeroImg = function (heroId) {
-    var heroApiUrl = "http://gateway.marvel.com/v1/public/characters/" + heroId + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash
+    var heroApiUrl = "http://gateway.marvel.com/v1/public/characters/" + heroId + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash;
 
     // Create <img> then assign API Url to image source
     fetch(heroApiUrl)
@@ -1614,6 +1614,8 @@ var renderHeroImg = function (heroId) {
                 var fileExt = heroData.data.results[0].thumbnail.extension;
                 var pathUrl = heroData.data.results[0].thumbnail.path;
                 var description = heroData.data.results[0].description;
+                var heroResourceUrl = heroData.data.results[0].urls[0].url;
+                var imageLink = document.createElement('a')
                 var heroImg = document.createElement('img');
                 var heroDescription = document.createElement('p');
 
@@ -1622,6 +1624,8 @@ var renderHeroImg = function (heroId) {
                 heroImg.innerHTML = '';
                 heroImg.src = pathUrl + '/portrait_xlarge.' + fileExt;;
                 heroImg.classList.add("hero-image")
+                imageLink.href = heroResourceUrl;
+                imageLink.target = "_blank";
 
                 // Clears out any current description
                 heroDescription.innerHTML = '';
@@ -1629,7 +1633,8 @@ var renderHeroImg = function (heroId) {
                 heroDescription.classList.add("hero-description");
 
                 // Render hero image and description to page
-                heroDisplayEl.appendChild(heroImg);
+                imageLink.appendChild(heroImg)
+                heroDisplayEl.appendChild(imageLink);
                 heroDisplayEl.appendChild(heroDescription)
 
                 // Get events details Array
@@ -1685,14 +1690,15 @@ function getMovieData(heroName) {
 
                 // Get poster URL and movie ratings
                 var moviePosterUrl = movieData.Poster;
-                var metascore = movieData.Metascore;
-                var imdbScore = movieData.imdbRating;
+                var metascore = movieData.Ratings[2].Value;
+                var rottenscore = movieData.Ratings[1].Value;
+                var imdbScore = movieData.Ratings[0].Value;
                 var addPoster = document.createElement('img');
                 var addScores = document.createElement('h3');
 
                 // Assign value to tags
                 addPoster.src = moviePosterUrl;
-                addScores.textContent = "Metascore: " + metascore + "%  ---  IMDB: " + imdbScore + "/10";
+                addScores.textContent = "Metacritic: " + metascore + " --- Rotten Tomatoes: " + rottenscore + " --- IMDB: " + imdbScore;
 
                 // Render tags to page
                 movieReviewsEl.appendChild(addScores);

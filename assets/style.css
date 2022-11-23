@@ -106,6 +106,7 @@ nav ul li a:hover {
 }
 
 .movie-review-display {
+  display: block;
   font-size: 25px;
   color: red;
 }
