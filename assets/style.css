@@ -96,7 +96,7 @@ nav ul li a:hover {
 }
 
 #event-links a {
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .hero-description {
@@ -106,6 +106,6 @@ nav ul li a:hover {
 }
 
 .movie-review-display {
-  font-size: 30px;
+  font-size: 25px;
   color: red;
 }
