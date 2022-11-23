@@ -1622,6 +1622,7 @@ var renderHeroImg = function (heroId) {
                 // Clears out any current photo
                 heroDisplayEl.innerHTML = '';
                 heroImg.innerHTML = '';
+
                 heroImg.src = pathUrl + '/portrait_xlarge.' + fileExt;;
                 heroImg.classList.add("hero-image")
                 imageLink.href = heroResourceUrl;
@@ -1666,10 +1667,10 @@ var getEventDetails = function (uri, eventTitle) {
                 // Create and render link to page
                 var eventDetailsUrl = eventData.data.results[0].urls[0].url
                 var addEvents = document.createElement('a');
-
+               
                 // Assign value to tag
-                addEvents.textContent = eventTitle;
-                addEvents.href = eventDetailsUrl;
+                addEvents.textContent = eventTitle;               
+                addEvents.href =  eventDetailsUrl.replace('http://', 'https://');
 
                 // Render tag to page
                 heroEventsEl.appendChild(addEvents);
@@ -1690,6 +1691,7 @@ function getMovieData(heroName) {
 
                 // Get poster URL and movie ratings
                 var moviePosterUrl = movieData.Poster;
+                moviePosterUrl.replace('http://', 'https://');
                 var metascore = movieData.Ratings[2].Value;
                 var rottenscore = movieData.Ratings[1].Value;
                 var imdbScore = movieData.Ratings[0].Value;
