@@ -82,10 +82,19 @@ nav ul li a:hover{
 }
 
 .hero-name {
-  font-size: 200px;
+  font-size: 150px;
   color: rgb(155, 7, 7);
 }
 
 .hero-image {
   min-width: 500px;
+}
+
+#event-links {
+  display: flex;
+  flex-direction: column;
+}
+
+#event-links a {
+  font-size: 30px;
 }

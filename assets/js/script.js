@@ -1571,6 +1571,9 @@ var heroInputEl = document.querySelector('#search-box');
 var searchFormEl = document.querySelector('#search-form');
 var heroDisplayEl = document.querySelector('#hero-photo');
 var nameDisplay = document.querySelector('#hero-name-display');
+var heroEventsEl = document.querySelector('#event-links')
+var apiKey = '1a380943b10a057172bfb3d0c8676926';
+var generatedHash = 'd756b5220d6651f35ff1e5576f63f362';
 
 // Even handler for new hero search
 var formSubmitHandler = function (event) {
@@ -1586,29 +1589,76 @@ var formSubmitHandler = function (event) {
     };
 };
 
+// Get hero ID by searching through heroIDArray
 var getHeroId = function (input) {
-
     var characterName = input.toUpperCase();
     for (var i = 0; i < heroIdArray.length; i++) {
         if (characterName === heroIdArray[i]["hero"].toUpperCase()) {
             nameDisplay.textContent = characterName;
-
+            var heroIdNum = heroIdArray[i]["id"];
+            renderHeroImg(heroIdNum);
         }
     }
 }
 
-// function appendPhoto(fileExt, pathUrl) {
-//     // Create new api for hero photo
-//     var thumbnailApi = pathUrl + '/portrait_xlarge.' + fileExt;
-//     // Create dynamic <img>
-//     var photo = document.createElement('img');
-//     photo.innerHTML = '';
-//     photo.src = thumbnailApi;
-//     photo.classList.add("hero-image")
+// Fetch hero photo from API
+var renderHeroImg = function (heroId) {
+    var heroApiUrl = "http://gateway.marvel.com/v1/public/characters/" + heroId + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash
 
-//     // Render hero image to page
-//     heroDisplayEl.appendChild(photo);
-// }
+    // Create <img> then assign API Url to image source
+    fetch(heroApiUrl)
+        .then(function (response) {
+            response.json().then(function (heroData) {
+                var fileExt = heroData.data.results[0].thumbnail.extension;
+                var pathUrl = heroData.data.results[0].thumbnail.path;
+                var heroImg = document.createElement('img');
+
+                // Clears out any current photo
+                heroDisplayEl.innerHTML = '';
+                heroImg.innerHTML = '';
+                heroImg.src = pathUrl + '/portrait_xlarge.' + fileExt;;
+                heroImg.classList.add("hero-image")
+
+                // Render hero image to page
+                heroDisplayEl.appendChild(heroImg);
+
+                // Get events details Array
+                var eventsArray = heroData.data.results[0].events.items;
+                getHeroEvents(eventsArray);
+            })
+        })
+}
+
+// Retrieve hero's events url
+var getHeroEvents = function (allEvents) {
+    for (j = 0; j < allEvents.length; j++) {
+        // Assign event name and URL
+        var eventName = allEvents[j].name;
+        var eventUri = allEvents[j].resourceURI;
+
+        getEventDetails(eventUri, eventName);
+    }
+}
+
+// Fetch event specific url
+var getEventDetails = function (uri, eventTitle) {
+    var eventsApi = uri + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash;
+    fetch(eventsApi)
+        .then(function (response) {
+            response.json().then(function (eventData) {
+
+                // Create and render link to page
+                var eventDetailsUrl = eventData.data.results[0].urls[0].url
+                var addEvents = document.createElement('a');
+
+                addEvents.textContent = eventTitle;
+                addEvents.href = eventDetailsUrl;
+
+                heroEventsEl.appendChild(addEvents);
+            })
+        })
+}
+
 
 // function getMovieData() {
 
