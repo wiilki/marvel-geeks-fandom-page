@@ -26,7 +26,7 @@ var formSubmitHandler = function (event) {
 // Match user input to characters name in array
 function getCharData(character) {
 
-    // GET Request endpoint (TODO: update so we can get keys from .env file)
+    // GET Request endpoint
     var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&name=' + character + '&apikey=' + config.PUBLIC_KEY + '&hash=' + config.HASH_KEY +'&';
     // perform GET request
     fetch(marvelApiUrl)
