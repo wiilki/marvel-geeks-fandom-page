@@ -26,58 +26,43 @@ var formSubmitHandler = function (event) {
 // Match user input to characters name in array
 function getCharData(character) {
 
-    var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&name=' + character + '&apikey=5c7c9b1197b1acab4c35914e52e3d2de&hash=1b4af5cb2f24c39efbb7806237705b95&';
-
+    // GET Request endpoint (TODO: update so we can get keys from .env file)
+    var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&name=' + character + '&apikey=' + config.PUBLIC_KEY + '&hash=' + config.HASH_KEY +'&';
+    // perform GET request
     fetch(marvelApiUrl)
         .then(function (response) {
+            // verify if response is valid
             if (response.status === 200)
             {
-                // console.log(response.json());
-                console.log(response.status)
+                // process the response with promise 
                 response.json().then(function (responseJN) {
-                    // grab data
-                    var dataPolled = responseJN.data.results
+                    // grab data from promise
+                    var dataPolled = responseJN.data.results;
+                    // verify that data we received is in the database (spiderman is not 100% owned by marvel, hence limited data)
                     if (dataPolled[0])
                     {
-                        console.log(dataPolled)
                         // dynamically update the name on site
                         characterDisplayEl.innerHTML = "<h1 class='character-name'>" + dataPolled[0].name + "</h1>";
-                        // append the thumbnail photo TODO: instead use a better image, currently distorted 
+                        // append the thumbnail photo 
+                        // TODO: instead use a better image, currently distorted 
                         appendPhoto(dataPolled[0].thumbnail.extension, dataPolled[0].thumbnail.path)
                     }
-                    else{
+                    // handle limited data case
+                    else
+                    {
                         characterDisplayEl.innerHTML = "<h1 class='character-description'>" + "No Data for " + character  + "</h1>";
 
                     }
                     
                 })
             }
+            // invalid response
             else 
             {
                 alert("Error when polling http request!")
             }
             
     });
-    // manually seaches through each array in our dictionary (very inefficient)
-    // for (j = 0; j < charactersArray[0].length; j++) {
-    //     var newArray = charactersArray[0][j];
-    //     // Iterates through second level of arrays
-    //     for (k = 0; k < newArray.length; k++) {
-    //         var charName = newArray[k].name;
-    //         var charExt = newArray[k].thumbnail.extension;
-    //         var charPath = newArray[k].thumbnail.path;
-
-    //         // If value of input equals a character's name in the array
-    //         if (charName.toUpperCase() === character.toUpperCase()) {
-    //             characterData.ext = charExt;
-    //             characterData.path = charPath;
-    //             characterDisplayEl.innerHTML = "<h1 class='character-name'>" + charName + "</h1>";
-    //         };
-    //     };
-    // };
-    // var fileExt = characterData.ext;
-    // var pathUrl = characterData.path;
-    // appendPhoto(fileExt, pathUrl)
 };
 
 function appendPhoto(fileExt, pathUrl) {
