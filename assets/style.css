@@ -104,3 +104,8 @@ nav ul li a:hover {
   margin: 24px 10%;
   color: red;
 }
+
+.movie-review-display {
+  font-size: 30px;
+  color: red;
+}

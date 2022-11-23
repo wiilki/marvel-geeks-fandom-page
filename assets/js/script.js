@@ -1571,7 +1571,8 @@ var heroInputEl = document.querySelector('#search-box');
 var searchFormEl = document.querySelector('#search-form');
 var heroDisplayEl = document.querySelector('#hero-photo');
 var nameDisplay = document.querySelector('#hero-name-display');
-var heroEventsEl = document.querySelector('#event-links')
+var heroEventsEl = document.querySelector('#event-links');
+var movieReviewsEl = document.querySelector('#movie-reviews');
 var apiKey = '1a380943b10a057172bfb3d0c8676926';
 var generatedHash = 'd756b5220d6651f35ff1e5576f63f362';
 
@@ -1597,6 +1598,7 @@ var getHeroId = function (input) {
             nameDisplay.textContent = characterName;
             var heroIdNum = heroIdArray[i]["id"];
             renderHeroImg(heroIdNum);
+            getMovieData(characterName);
         }
     }
 }
@@ -1643,7 +1645,7 @@ var getHeroEvents = function (allEvents) {
         // Assign event name and URL
         var eventName = allEvents[j].name;
         var eventUri = allEvents[j].resourceURI;
-
+        // Call next function
         getEventDetails(eventUri, eventName);
     }
 }
@@ -1651,6 +1653,7 @@ var getHeroEvents = function (allEvents) {
 // Fetch event specific url
 var getEventDetails = function (uri, eventTitle) {
     var eventsApi = uri + "?ts=1&apikey=" + apiKey + "&hash=" + generatedHash;
+
     fetch(eventsApi)
         .then(function (response) {
             response.json().then(function (eventData) {
@@ -1659,41 +1662,57 @@ var getEventDetails = function (uri, eventTitle) {
                 var eventDetailsUrl = eventData.data.results[0].urls[0].url
                 var addEvents = document.createElement('a');
 
+                // Assign value to tag
                 addEvents.textContent = eventTitle;
                 addEvents.href = eventDetailsUrl;
 
+                // Render tag to page
                 heroEventsEl.appendChild(addEvents);
             })
         })
 }
 
+function getMovieData(heroName) {
+    var omdbApiKey = "d66cee3f"
+    // API requires "+" symbol where spaces would be
+    var movieName = heroName.replace(/\s/g, '+');
+    // OMDC API URL
+    var omdbApiUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + omdbApiKey;
 
-function fetchTest () {
-fetch('https://gateway.marvel.com/v1/public/characters/1009351/stories?ts=1&apikey=1a380943b10a057172bfb3d0c8676926&hash=d756b5220d6651f35ff1e5576f63f362')
-.then(function (response) {
-    console.log(response)
-})
+    fetch(omdbApiUrl)
+        .then(function (response) {
+            response.json().then(function (movieData) {
+
+                // Get poster URL and movie ratings
+                var moviePosterUrl = movieData.Poster;
+                var metascore = movieData.Metascore;
+                var imdbScore = movieData.imdbRating;
+                var addPoster = document.createElement('img');
+                var addScores = document.createElement('h3');
+
+                // Assign value to tags
+                addPoster.src = moviePosterUrl;
+                addScores.textContent = "Metascore: " + metascore + "%  ---  IMDB: " + imdbScore + "/10";
+
+                // Render tags to page
+                movieReviewsEl.appendChild(addScores);
+                movieReviewsEl.appendChild(addPoster);
+                addScores.classList.add("movie-review-display")
+
+            })
+        })
+
+
 }
 
-// function getMovieData() {
-
-//     var movieName = "Ironman"
-//     // OMDC API URL
-//     var omdbApiUrl = "http://www.omdbapi.com/?t=incredible+hulk&apikey=d66cee3f";
-
-//     fetch(omdbApiUrl)
+// function fetchTest() {
+//     fetch('https://gateway.marvel.com/v1/public/characters/1009351/stories?ts=1&apikey=1a380943b10a057172bfb3d0c8676926&hash=d756b5220d6651f35ff1e5576f63f362')
 //         .then(function (response) {
-//             return response.json();
+//             console.log(response)
 //         })
-//         .then(function (data) {
-
-//             reviewsDiv.appendChild(data)
-//         });
 // }
 
-
-
-fetchTest();
+// fetchTest();
 searchFormEl.addEventListener('submit', formSubmitHandler);
 
 
