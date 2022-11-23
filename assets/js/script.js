@@ -1612,9 +1612,9 @@ var renderHeroImg = function (heroId) {
         .then(function (response) {
             response.json().then(function (heroData) {
                 var fileExt = heroData.data.results[0].thumbnail.extension;
-                var pathUrl = heroData.data.results[0].thumbnail.path;
+                var pathUrl = heroData.data.results[0].thumbnail.path.replace('http://', 'https://');
                 var description = heroData.data.results[0].description;
-                var heroResourceUrl = heroData.data.results[0].urls[0].url;
+                var heroResourceUrl = heroData.data.results[0].urls[0].url.replace('http://', 'https://');
                 var imageLink = document.createElement('a')
                 var heroImg = document.createElement('img');
                 var heroDescription = document.createElement('p');
@@ -1650,7 +1650,7 @@ var getHeroEvents = function (allEvents) {
     for (j = 0; j < allEvents.length; j++) {
         // Assign event name and URL
         var eventName = allEvents[j].name;
-        var eventUri = allEvents[j].resourceURI;
+        var eventUri = allEvents[j].resourceURI.replace('http://', 'https://');
         // Call next function
         getEventDetails(eventUri, eventName);
     }
@@ -1665,12 +1665,12 @@ var getEventDetails = function (uri, eventTitle) {
             response.json().then(function (eventData) {
 
                 // Create and render link to page
-                var eventDetailsUrl = eventData.data.results[0].urls[0].url
+                var eventDetailsUrl = eventData.data.results[0].urls[0].url.replace('http://', 'https://')
                 var addEvents = document.createElement('a');
                
                 // Assign value to tag
                 addEvents.textContent = eventTitle;               
-                addEvents.href =  eventDetailsUrl.replace('http://', 'https://');
+                addEvents.href =  eventDetailsUrl;
 
                 // Render tag to page
                 heroEventsEl.appendChild(addEvents);
@@ -1690,8 +1690,7 @@ function getMovieData(heroName) {
             response.json().then(function (movieData) {
 
                 // Get poster URL and movie ratings
-                var moviePosterUrl = movieData.Poster;
-                moviePosterUrl.replace('http://', 'https://');
+                var moviePosterUrl = movieData.Poster.replace('http://', 'https://');
                 var metascore = movieData.Ratings[2].Value;
                 var rottenscore = movieData.Ratings[1].Value;
                 var imdbScore = movieData.Ratings[0].Value;
