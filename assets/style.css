@@ -29,7 +29,7 @@ nav ul li a {
   padding: 10px;
 }
 
-nav ul li a:hover{
+nav ul li a:hover {
   color: red;
   transition: .5s;
 }
@@ -41,7 +41,7 @@ nav ul li a:hover{
   color: aliceblue;
   line-height: 65px;
   position: relative;
-} 
+}
 
 .container {
   width: 100vw;
@@ -97,4 +97,10 @@ nav ul li a:hover{
 
 #event-links a {
   font-size: 30px;
+}
+
+.hero-description {
+  font-size: 30px;
+  margin: 24px 10%;
+  color: red;
 }

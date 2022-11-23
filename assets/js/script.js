@@ -1611,7 +1611,9 @@ var renderHeroImg = function (heroId) {
             response.json().then(function (heroData) {
                 var fileExt = heroData.data.results[0].thumbnail.extension;
                 var pathUrl = heroData.data.results[0].thumbnail.path;
+                var description = heroData.data.results[0].description;
                 var heroImg = document.createElement('img');
+                var heroDescription = document.createElement('p');
 
                 // Clears out any current photo
                 heroDisplayEl.innerHTML = '';
@@ -1619,8 +1621,14 @@ var renderHeroImg = function (heroId) {
                 heroImg.src = pathUrl + '/portrait_xlarge.' + fileExt;;
                 heroImg.classList.add("hero-image")
 
-                // Render hero image to page
+                // Clears out any current description
+                heroDescription.innerHTML = '';
+                heroDescription.textContent = description;
+                heroDescription.classList.add("hero-description");
+
+                // Render hero image and description to page
                 heroDisplayEl.appendChild(heroImg);
+                heroDisplayEl.appendChild(heroDescription)
 
                 // Get events details Array
                 var eventsArray = heroData.data.results[0].events.items;
@@ -1660,6 +1668,13 @@ var getEventDetails = function (uri, eventTitle) {
 }
 
 
+function fetchTest () {
+fetch('https://gateway.marvel.com/v1/public/characters/1009351/stories?ts=1&apikey=1a380943b10a057172bfb3d0c8676926&hash=d756b5220d6651f35ff1e5576f63f362')
+.then(function (response) {
+    console.log(response)
+})
+}
+
 // function getMovieData() {
 
 //     var movieName = "Ironman"
@@ -1678,7 +1693,7 @@ var getEventDetails = function (uri, eventTitle) {
 
 
 
-
+fetchTest();
 searchFormEl.addEventListener('submit', formSubmitHandler);
 
 
