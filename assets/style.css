@@ -29,7 +29,7 @@ nav ul li a {
   padding: 10px;
 }
 
-nav ul li a:hover {
+nav ul li a:hover{
   color: red;
   transition: .5s;
 }
@@ -41,7 +41,7 @@ nav ul li a:hover {
   color: aliceblue;
   line-height: 65px;
   position: relative;
-}
+} 
 
 .container {
   width: 100vw;
@@ -76,13 +76,13 @@ nav ul li a:hover {
   color: black;
 }
 
-.hero-display-page {
+.character-display-page {
   text-align: center;
   font-size: 50px;
 }
 
-.hero-name {
-  font-size: 150px;
+.character-name {
+  font-size: 200px;
   color: rgb(155, 7, 7);
 }
 
@@ -93,25 +93,4 @@ nav ul li a:hover {
 
 .hero-image {
   min-width: 500px;
-}
-
-#event-links {
-  display: flex;
-  flex-direction: column;
-}
-
-#event-links a {
-  font-size: 20px;
-}
-
-.hero-description {
-  font-size: 30px;
-  margin: 24px 10%;
-  color: red;
-}
-
-.movie-review-display {
-  display: block;
-  font-size: 25px;
-  color: red;
 }
