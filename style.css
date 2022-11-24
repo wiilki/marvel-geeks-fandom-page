@@ -1,0 +1,100 @@
+* {
+  color: rgb(181, 1, 1);
+}
+
+body {
+  background-color: black;
+}
+
+.movie-title,
+.review-scores,
+.critic-consensus,
+.movie-img {
+  text-align: center;
+  padding: 10px;
+  color: rgb(199, 169, 1);
+}
+
+.movie-title {
+  font-size: 50px;
+  font-family: 'Times New Roman', Times, serif;
+  border: 1px solid white;
+  margin-left:30%;
+  margin-right: 30%;
+  margin-bottom: 10px;
+}
+  
+.movie-img,
+.movie-img-1 {
+  text-align: center;
+  background-image: url(https://wallpapercave.com/wp/wp8998458.jpg);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 1px solid red;
+  border-radius: 50px;
+}
+
+.movie-img-1 {
+  box-shadow: 0px 0px 30px red;
+  border-radius: 50px;
+}
+
+.rt-info {
+  background: black;
+  margin: 10px 37%;
+  border: 1px solid white;
+  border-radius: 70px;
+  height: 500px;
+  width: auto;
+}
+
+.background-pic {
+  margin-top: 10px;
+  border: 1px solid white;
+  border-radius: 50px;
+  background: url(https://media.wired.com/photos/5955ceabcbd9b77a41915cf6/master/pass/marvel-characters.jpg);
+}
+
+.critic-score, 
+.audience-score {
+  text-align: center;
+  font-weight:lighter;
+  font-size: 30px;
+  text-decoration: underline;
+}
+
+.critic-consensus {
+  font-size:30px;
+}
+
+.critic-text {
+  color: white;
+  font-size: 18px;
+  font-family: 'Times New Roman';
+  font-style: oblique;
+}
+
+.critic-percent,
+.audience-percent {
+  text-align: center;
+  color: white;
+}
+
+#foobar {
+  display: none;
+}
+
+.links {
+  color: rgb(199, 169, 1);
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  margin: auto;
+}
+
+.link-text:hover {
+  color: rgb(199, 169, 1);
+}
