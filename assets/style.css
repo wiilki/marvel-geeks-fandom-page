@@ -86,6 +86,11 @@ nav ul li a:hover {
   color: rgb(155, 7, 7);
 }
 
+.character-description {
+  font-size: 75px;
+  color: rgb(155, 7, 7);
+}
+
 .hero-image {
   min-width: 500px;
 }
