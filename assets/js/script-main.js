@@ -8,7 +8,7 @@ var formSubmitHandler = function (event) {
     var characterName = characterInputEl.value.trim();
     // redirect to another page that displays the results
     if (characterName) {
-        getResponse(characterName)
+        processRequests(characterName)
         characterInputEl.value = '';
     } else {
         alert("Cannot be blank");
@@ -16,7 +16,7 @@ var formSubmitHandler = function (event) {
 };
 
 
-var getResponse = (character) =>
+var processRequests = (character) =>
 {
     // GET Request endpoint
     var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&name=' + character + '&apikey=' + config.PUBLIC_KEY + '&hash=' + config.HASH_KEY +'&';
@@ -39,10 +39,13 @@ var getResponse = (character) =>
                         var imgLink = dataPolled[0].thumbnail.path
                         // grab extension of api
                         var imgExt = dataPolled[0].thumbnail.extension
-                        // relocate the next html page
-                        window.location.href='results.html?character=' + characterName + "?img-link=" + imgLink + "?img-ext=" + imgExt;
+                        // call IMDb api
+                        findIMDBID(characterName)
                     }
-                    
+                    else
+                    {
+                        alert("Not a Marvel Character!")
+                    }
                 })
             }
             // invalid response
@@ -52,6 +55,70 @@ var getResponse = (character) =>
             }
             
     });
+}
+
+var findIMDBID = (characterAPI) =>
+{
+    // search name in API
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': 'c283f784f4msh9f1b5e27819ca63p1488ccjsne3a8170d557f',
+            'X-RapidAPI-Host': 'movie-database-alternative.p.rapidapi.com'
+        }
+    };
+    
+    fetch('https://movie-database-alternative.p.rapidapi.com/?s=' + characterAPI + '&r=json&page=1', options)
+        .then(response => response.json())
+        .then(response =>
+        {   
+            // find the matching imdb link
+            response.Search.forEach(element => {
+                if (element.Title === characterAPI)
+                {
+                    // get needed data from imdbID
+                    getIMDBResponse(element.imdbID, characterAPI)
+                }
+            });
+        })
+        .catch(err => console.error(err));
+
+}
+
+var getIMDBResponse = (imdbID, characterAPI) =>
+{
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': 'c283f784f4msh9f1b5e27819ca63p1488ccjsne3a8170d557f',
+            'X-RapidAPI-Host': 'movie-database-alternative.p.rapidapi.com'
+        }
+    };
+    
+    fetch('https://movie-database-alternative.p.rapidapi.com/?r=json&i=' + imdbID, options)
+        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            // grab data to pass as query parameters to front end
+            var characterName = characterAPI;
+            var poster = response.Poster
+            var rottenTomatoesScore = response.Ratings[1].Value
+            var plot = response.Plot
+            var releaseDate = response.Released
+            var rated = response.Rated
+
+            // pass query parameters to the new html page
+            window.location.href='results.html?character=' + characterName + "?img-link=" + poster + "?rottenTomatoesScore=" + rottenTomatoesScore +"?plot="+plot +
+                "?releaseDate=" + releaseDate + "?rated=" + rated;
+
+            console.log(characterName)
+            console.log(poster)
+            console.log(rottenTomatoesScore)
+            console.log(plot)
+            console.log(releaseDate)
+            console.log(rated)
+        })
+        .catch(err => console.error(err));
 }
 
 // button click handler
