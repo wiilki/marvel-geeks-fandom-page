@@ -14,9 +14,9 @@ html, body {
 
 .container {
   width: 100%;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* text-align: center; */
 }
 .search-bar {
   width: 95%;
@@ -26,6 +26,16 @@ html, body {
   justify-content: center;
   border-radius: 60px;
   padding: 10px 20px;
+}
+
+.search-bar input {
+  background: transparent;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 24px 20px;
+  font-size: 20px;
+  color: black;
 }
 
 .search-btn 
@@ -46,3 +56,78 @@ html, body {
   justify-content: center;
   margin-left: 150px;
 }
+
+/* nav {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 1%;
+  padding-left: 3.5%;
+  padding-right: 3.5%;
+  justify-content: center;
+}
+
+nav ul li {
+  list-style-type: none;
+  display: inline-block;
+  padding: 25px;
+}
+
+nav ul li a {
+  color: aliceblue;
+  text-decoration: none;
+  text-transform: capitalize;
+  padding: 10px;
+}
+
+nav ul li a:hover{
+  color: red;
+  transition: .5s;
+}
+
+.content {
+  top: 5%;
+  margin-left: 3.5%;
+  transform: translateY(50%);
+  color: aliceblue;
+  line-height: 65px;
+  position: relative;
+} 
+
+
+
+.search-btn 
+{
+  width: 10px;
+  height: 10px;
+  background-color: white;
+}
+
+.search-bar input {
+  background: transparent;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 24px 20px;
+  font-size: 20px;
+  color: black;
+}
+
+.character-display-page {
+  text-align: center;
+  font-size: 50px;
+}
+
+.character-name {
+  font-size: 200px;
+  color: rgb(155, 7, 7);
+}
+
+.character-description {
+  font-size: 75px;
+  color: rgb(155, 7, 7);
+}
+
+.hero-image {
+  min-width: 500px;
+}  */
