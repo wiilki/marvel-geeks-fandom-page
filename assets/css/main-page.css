@@ -49,6 +49,7 @@ html, body {
   background-size: cover;
   justify-content: center;
   text-align: center;
+  border: none;
 }
 
 .marvel-studios-img

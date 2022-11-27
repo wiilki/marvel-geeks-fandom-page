@@ -98,7 +98,6 @@ var getIMDBResponse = (imdbID, characterAPI) =>
     fetch('https://movie-database-alternative.p.rapidapi.com/?r=json&i=' + imdbID, options)
         .then(response => response.json())
         .then(response => {
-            console.log(response)
             // grab data to pass as query parameters to front end
             var characterName = characterAPI;
             var poster = response.Poster
@@ -111,12 +110,6 @@ var getIMDBResponse = (imdbID, characterAPI) =>
             window.location.href='results.html?character=' + characterName + "?img-link=" + poster + "?rottenTomatoesScore=" + rottenTomatoesScore +"?plot="+plot +
                 "?releaseDate=" + releaseDate + "?rated=" + rated;
 
-            console.log(characterName)
-            console.log(poster)
-            console.log(rottenTomatoesScore)
-            console.log(plot)
-            console.log(releaseDate)
-            console.log(rated)
         })
         .catch(err => console.error(err));
 }

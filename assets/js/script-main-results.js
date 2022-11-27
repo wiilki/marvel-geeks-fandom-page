@@ -20,8 +20,10 @@ var processCharacter = () =>
     var plotStr = decodeURI(subquery[4].split('=')[1])
     var releasedDateStr = decodeURI(subquery[5].split('=')[1])
     var ratedStr = decodeURI(subquery[6].split('=')[1])
+    
     // check if character was not empty and dynamically update webpage
     if (character) {
+        // update the webpage dynamically with variables
         movie_title.textContent = character;
         movie_img.src = imagePoster;
         rottenTomatoesScore.textContent = "Rotten Tomatoes: " + rottenTomatoesScoreStr;
