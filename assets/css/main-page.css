@@ -1,9 +1,9 @@
 * {
-  margin: 25px;
+  /* margin: 25px; */
   box-sizing: border-box;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   background-color: black;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 html, body {
@@ -21,9 +21,9 @@ html, body {
 .search-bar {
   width: 95%;
   background: gray;
-  align-items: center;
+  /* align-items: center;
   text-align: center;
-  justify-content: center;
+  justify-content: center; */
   border-radius: 60px;
   padding: 10px 20px;
 }
@@ -53,8 +53,9 @@ html, body {
 
 .marvel-studios-img
 {
-  justify-content: center;
-  margin-left: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* nav {
