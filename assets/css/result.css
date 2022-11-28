@@ -2,6 +2,19 @@
   color: rgb(181, 1, 1);
 }
 
+
+header
+{
+  width: 100%;
+  display: inline-block;
+}
+
+.home-page-nav
+{
+  width: 250px;
+  height: 50px;
+}
+
 body {
   background-color: black;
 }
@@ -11,18 +24,26 @@ body {
 .critic-consensus,
 .movie-img {
   text-align: center;
-  padding: 10px;
   color: rgb(199, 169, 1);
 }
 
 .movie-title {
+  /* float: center; */
+  display: block;
   font-size: 50px;
   font-family: 'Times New Roman', Times, serif;
-  border: 1px solid white;
-  margin-left:30%;
-  margin-right: 30%;
-  margin-bottom: 10px;
+  margin: 0px;
 }
+
+
+/* .movie-name
+{
+  color: rgb(199, 169, 1);
+  font-size: 50px;
+  font-family: 'Times New Roman', Times, serif;
+  margin:  */
+
+/* } */
   
 .movie-img,
 .movie-img-1 {

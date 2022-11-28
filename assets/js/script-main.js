@@ -63,7 +63,7 @@ var findIMDBID = (characterAPI) =>
     const options = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': 'c283f784f4msh9f1b5e27819ca63p1488ccjsne3a8170d557f',
+            'X-RapidAPI-Key': config.RAPID_KEY,
             'X-RapidAPI-Host': 'movie-database-alternative.p.rapidapi.com'
         }
     };
@@ -90,7 +90,7 @@ var getIMDBResponse = (imdbID, characterAPI) =>
     const options = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': 'c283f784f4msh9f1b5e27819ca63p1488ccjsne3a8170d557f',
+            'X-RapidAPI-Key': config.RAPID_KEY,
             'X-RapidAPI-Host': 'movie-database-alternative.p.rapidapi.com'
         }
     };
