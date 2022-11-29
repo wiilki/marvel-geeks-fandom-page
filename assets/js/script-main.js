@@ -90,7 +90,7 @@ var getIMDBResponse = (imdbID, characterAPI) =>
     const options = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': config.RAPID_KEY,
+            'X-RapidAPI-Key': '534da45c91msh1a199e3ff62abfdp1fed85jsn600cca5f4482',
             'X-RapidAPI-Host': 'movie-database-alternative.p.rapidapi.com'
         }
     };
