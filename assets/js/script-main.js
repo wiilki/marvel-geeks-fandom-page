@@ -19,7 +19,7 @@ var formSubmitHandler = function (event) {
 var processRequests = (character) =>
 {
     // GET Request endpoint
-    var marvelApiUrl = 'http://gateway.marvel.com/v1/public/characters?ts=1&name=' + character + '&apikey=' + config.PUBLIC_KEY + '&hash=' + config.HASH_KEY +'&';
+    var marvelApiUrl = 'https://gateway.marvel.com/v1/public/characters?ts=1&name=' + character + '&apikey=' + config.PUBLIC_KEY + '&hash=' + config.HASH_KEY +'&';
     // perform GET request
     fetch(marvelApiUrl)
         .then(function (response) {
