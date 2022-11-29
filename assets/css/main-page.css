@@ -1,0 +1,60 @@
+* {
+  /* margin: 25px; */
+  box-sizing: border-box;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background-color: black;
+  /* justify-content: center; */
+}
+
+html, body {
+  margin:25px;
+  padding:25px;
+  background-color: black;
+}
+
+.container {
+  width: 100%;
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* text-align: center; */
+}
+.search-bar {
+  width: 95%;
+  background: gray;
+  /* align-items: center;
+  text-align: center;
+  justify-content: center; */
+  border-radius: 60px;
+  padding: 10px 20px;
+}
+
+.search-bar input {
+  background: transparent;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 24px 20px;
+  font-size: 20px;
+  color: black;
+}
+
+.search-btn 
+{
+  position: absolute;
+  background: url("../images/Search-Button.png") no-repeat scroll 0 0 transparent;
+  color: #000000;
+  font-weight: bold;
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  justify-content: center;
+  text-align: center;
+  border: none;
+}
+
+.marvel-studios-img
+{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

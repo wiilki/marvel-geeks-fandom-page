@@ -6,60 +6,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/css/main-page.css">
     <title>Marvel Geeks Fandom Page</title>
 </head>
 
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#about">News</a></li>
-                <li><a href="#skills">Media Appearances</a></li>
-                <li><a href='#projects'>Origin Stories</a></li>
-                <li><a href='#contact'>Rotten Tomatoes Reviews</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <form id="search-form" class="container">
-        <h2>Search your favorite hero!</h2>
-        <input id="search-box" placeholder="Hero Name Here" class="search-bar">
-        <button id="search-btn" type="submit" src="./assets/images/Search-Button.png">Search</button>
-    </form>
-
-    <section id="hero-display" class="hero-display-page">
-        <div id="hero-name-display" class="hero-name"></div>
-        <div id="hero-photo"></div>
-
-        <div id="hero-events">
-            <h2 id="events-header">Comic Appearances</h2>
-            <ul id="event-links"></ul>
+    <main>
+        <div class="columns">
+            <!-- define new column -->
+            <div class="column is-full">
+                <!-- Search Form -->
+                <form id="search-form">
+                    <h1>Search your favorite hero!</h1>
+                    <input id="search-box" placeholder="Hero Name Here" class="search-bar">
+                    <button class="search-btn"> </button>
+                </form>
+            </div>
         </div>
 
-        <div id="media-appearances">
-            <h2>Media Appearances</h2>
+        <div class="columns">
+            <div class="column">
+                <!-- Marvel Studios image -->
+                <img src="./assets/images/marvel-logo.jpg" class="marvel-studios-img">
+            </div>
         </div>
 
-        <div id="origin-stories">
-            <h2>Origin Stories</h2>
-        </div>
+        <div id="character-display"></div>
 
-        <div id="movie-reviews">
-            <h2>Movie Review</h2>
-        </div>
+    </main>
 
-    </section>
-
+    <!-- <script type="text/javascript" src="assets/allCharacters.json"></script> -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
-
       integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
     <script src="./assets/js/config.js"></script>
-=======
-        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
-
-    <script src="./assets/js/script.js"></script>
+    <script src="./assets/js/script-main.js"></script>
 </body>
 
 </html>
