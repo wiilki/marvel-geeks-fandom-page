@@ -19,12 +19,11 @@ const useMarvelApi = (query, customUrl = null) => {
         const ts = new Date().getTime();
         const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 
-        // Determine the URL based on the provided parameters.
         const url = customUrl || `https://gateway.marvel.com:443/v1/public/characters`;
 
         const params = customUrl
-          ? { apikey: publicKey, ts, hash } // For customUrl, basic params are needed.
-          : { apikey: publicKey, ts, hash, nameStartsWith: query }; // For character search, include the query.
+          ? { apikey: publicKey, ts, hash }
+          : { apikey: publicKey, ts, hash, nameStartsWith: query }; 
 
         const response = await axios.get(url, { params });
 
@@ -37,7 +36,7 @@ const useMarvelApi = (query, customUrl = null) => {
     };
 
     fetchData();
-  }, [query, customUrl]); // Include customUrl in the dependencies array
+  }, [query, customUrl]); 
 
   return { data, loading, error };
 };
