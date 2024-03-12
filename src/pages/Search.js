@@ -11,7 +11,6 @@ function Search() {
 
   useIMDBData('hulk');
 
-
   return (
     <section id="search-section">
       <h1>Search Marvel Characters</h1>
@@ -26,7 +25,7 @@ function Search() {
 
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
-      <h2>Versions of Hero</h2>
+      {query && data && data.length > 0 && <h2>Animated Versions</h2>}
       {data && <Comic characters={data} />}
     </section>
   );
