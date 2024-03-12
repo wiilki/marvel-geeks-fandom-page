@@ -26,7 +26,16 @@ const useMarvelApi = (query, customUrl = null) => {
 
         const response = await axios.get(url, { params });
 
-        setData(response.data.data.results);
+        // Convert image URLs to use HTTPS
+        const modifiedResults = response.data.data.results.map(result => ({
+          ...result,
+          thumbnail: {
+            ...result.thumbnail,
+            path: result.thumbnail.path.replace(/^http:/, 'https:'), // Replace http with https
+          },
+        }));
+
+        setData(modifiedResults);
       } catch (error) {
         setError(error);
       } finally {
