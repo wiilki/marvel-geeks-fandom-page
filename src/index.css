@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: black;
+  background-image: radial-gradient(black 20%, black 50%, rgba(0, 0, 0, .5) 100%);
+  background-size: 120%;
+  background-position: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  animation: tighten-vinette ease-out 1800ms forwards;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Barlow Condensed', sans-serif;
+}
+
+#home-section,
+#search-section {
+  min-height: 100vh;
+}
+
+footer {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  justify-content: space-around;
+  color: white;
+}
+
+footer img {
+  margin-top: -85px;
+}
+
+button {
+  font-family: 'Barlow Condensed', sans-serif;
+}

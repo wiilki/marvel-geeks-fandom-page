@@ -1,0 +1,87 @@
+#search-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+#search-section h1 {
+  color: white;
+  font-size: 40px;
+}
+
+#search-section h2 {
+  color: white;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  width: 60%;
+  max-width: 500px;
+  margin-bottom: 40px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#search-section>div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+#search-section>div>div:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+#search-section p {
+  padding: 0 10px 10px 10px;
+  font-size: 14px;
+  color: #fff3f3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+#search-section img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.comic-book-content {
+  margin-bottom: 30px;
+}
+
+.character-card {
+  display: grid;
+  width: calc(25% - 20px);
+  min-width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 5px;
+  box-shadow: 0px 0px 9px 1px white;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.character-card h3,
+.character-card a {
+  color: white;
+  text-align: center;
+}
+
+/* Adjustments for responsiveness */
+@media (max-width: 768px) {
+  input[type="text"] {
+    width: 80%;
+  }
+}
