@@ -19,21 +19,14 @@ const useMarvelApi = (query, customUrl = null) => {
         const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 
         const url = customUrl || `https://gateway.marvel.com:443/v1/public/characters`;
-        const params = customUrl
-          ? { apikey: publicKey, ts, hash }
-          : { apikey: publicKey, ts, hash, nameStartsWith: query };
-
+        const params = customUrl ? { apikey: publicKey, ts, hash } : { apikey: publicKey, ts, hash, nameStartsWith: query };
+        
         const response = await axios.get(url, { params });
 
-        // Convert http image URLs to https
-        const updatedResults = response.data.data.results.map(item => {
-          if (item.thumbnail && item.thumbnail.path) {
-            item.thumbnail.path = item.thumbnail.path.replace(/^http:/, 'https:');
-          }
-          return item;
-        });
+        // Iterate over each item in the data to convert any HTTP URLs to HTTPS
+        const secureData = response.data.data.results.map(item => convertUrlsToHttps(item));
 
-        setData(updatedResults);
+        setData(secureData);
       } catch (error) {
         setError(error);
       } finally {
@@ -48,3 +41,16 @@ const useMarvelApi = (query, customUrl = null) => {
 };
 
 export default useMarvelApi;
+
+// Utility function to convert URLs within an object from HTTP to HTTPS
+function convertUrlsToHttps(item) {
+  // Recursively process each property to look for URLs
+  for (let key in item) {
+    if (typeof item[key] === 'object') {
+      convertUrlsToHttps(item[key]);
+    } else if (typeof item[key] === 'string' && item[key].startsWith('http://')) {
+      item[key] = item[key].replace('http://', 'https://');
+    }
+  }
+  return item;
+}
