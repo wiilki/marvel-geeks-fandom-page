@@ -19,23 +19,21 @@ const useMarvelApi = (query, customUrl = null) => {
         const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 
         const url = customUrl || `https://gateway.marvel.com:443/v1/public/characters`;
-
         const params = customUrl
           ? { apikey: publicKey, ts, hash }
           : { apikey: publicKey, ts, hash, nameStartsWith: query };
 
         const response = await axios.get(url, { params });
 
-        // Convert image URLs to use HTTPS
-        const modifiedResults = response.data.data.results.map(result => ({
-          ...result,
-          thumbnail: {
-            ...result.thumbnail,
-            path: result.thumbnail.path.replace(/^http:/, 'https:'), // Replace http with https
-          },
-        }));
+        // Convert http image URLs to https
+        const updatedResults = response.data.data.results.map(item => {
+          if (item.thumbnail && item.thumbnail.path) {
+            item.thumbnail.path = item.thumbnail.path.replace(/^http:/, 'https:');
+          }
+          return item;
+        });
 
-        setData(modifiedResults);
+        setData(updatedResults);
       } catch (error) {
         setError(error);
       } finally {
