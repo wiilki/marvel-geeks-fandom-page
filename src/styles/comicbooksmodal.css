@@ -92,6 +92,10 @@
   /* right: 1.4rem; */
 }
 
+.comic-book-card h4 {
+  overflow-x: auto;
+}
+
 .close-button-container {
   display: flex;
   justify-content: center;

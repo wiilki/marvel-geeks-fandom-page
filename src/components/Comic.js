@@ -24,7 +24,7 @@ function Comic({ characters }) {
   };
 
   return (
-    <div className="comic-book-content">
+    <div className="character-content">
       {characters.map((character) => {
         const characterImageUrl = `${character.thumbnail.path}.${character.thumbnail.extension}`;
         if (characterImageUrl === notAvailableImage) return null;

@@ -1,12 +1,18 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const useIMDBData = (characterAPI) => {
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const imdbKey = process.env.REACT_APP_IMDB_KEY;
+
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       const options = {
         method: 'GET',
         headers: {
-          'X-RapidAPI-Key': '534da45c91msh1a199e3ff62abfdp1fed85jsn600cca5f4482',
+          'X-RapidAPI-Key': imdbKey,
           'X-RapidAPI-Host': 'movie-database-alternative.p.rapidapi.com'
         }
       };
@@ -14,29 +20,20 @@ const useIMDBData = (characterAPI) => {
       try {
         const response = await fetch(`https://movie-database-alternative.p.rapidapi.com/?s=${characterAPI}&r=json&page=1`, options);
         const searchData = await response.json();
-        const imdbID = searchData?.Search?.find(element => element.Title === characterAPI)?.imdbID;
-        if (imdbID) {
-          const imdbResponse = await fetch(`https://movie-database-alternative.p.rapidapi.com/?r=json&i=${imdbID}`, options);
-          const movieData = await imdbResponse.json();
-          const { Poster, Ratings, Plot, Released, Rated } = movieData;
-          const rottenTomatoesScore = Ratings[1]?.Value;
-          const queryParams = new URLSearchParams({
-            character: characterAPI,
-            'img-link': Poster,
-            'rottenTomatoesScore': rottenTomatoesScore,
-            'plot': Plot,
-            'releaseDate': Released,
-            'rated': Rated
-          });
-          window.location.href = `results.html?${queryParams.toString()}`;
-        }
+        setSearchResults(searchData.Search || []);
       } catch (error) {
         console.error(error);
+        setError(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [characterAPI]);
+  }, [characterAPI, imdbKey]);
+
+  return { searchResults, loading, error };
 };
+
 
 export default useIMDBData;
