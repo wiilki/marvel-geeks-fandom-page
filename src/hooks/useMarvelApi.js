@@ -8,7 +8,6 @@ const useMarvelApi = (query, customUrl = null) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // If neither query nor customUrl is provided, exit early.
     if (!query && !customUrl) return;
 
     const fetchData = async () => {
@@ -23,7 +22,7 @@ const useMarvelApi = (query, customUrl = null) => {
 
         const params = customUrl
           ? { apikey: publicKey, ts, hash }
-          : { apikey: publicKey, ts, hash, nameStartsWith: query }; 
+          : { apikey: publicKey, ts, hash, nameStartsWith: query };
 
         const response = await axios.get(url, { params });
 
@@ -36,7 +35,7 @@ const useMarvelApi = (query, customUrl = null) => {
     };
 
     fetchData();
-  }, [query, customUrl]); 
+  }, [query, customUrl]);
 
   return { data, loading, error };
 };
