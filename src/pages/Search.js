@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import useMarvelApi from '../hooks/useMarvelApi';
-import useIMDBData from '../hooks/useIMDBData';
 import Comic from '../components/Comic';
-// import Movies from '../components/Movies';
+import Movies from '../components/Movies';
 import '../styles/searchPage.css';
 
 function Search() {
   const [query, setQuery] = useState('');
   const { data, loading, error } = useMarvelApi(query);
-
-  useIMDBData('hulk');
-
 
   return (
     <section id="search-section">
@@ -22,12 +18,14 @@ function Search() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {/* <Movies /> */}
-
+      {/* Render Comics */}
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
-      <h2>Versions of Hero</h2>
+      {query && data && data.length > 0 && <h2>Visual Media</h2>}
       {data && <Comic characters={data} />}
+      {/* Render Movies */}
+      {query && <h2>Cinematic</h2>}
+      {query && <Movies characterAPI={query} />}
     </section>
   );
 }
