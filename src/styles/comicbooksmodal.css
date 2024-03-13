@@ -92,6 +92,11 @@
   /* right: 1.4rem; */
 }
 
+.comic-book-card p {
+  max-height: 350px;
+  overflow: hidden;
+}
+
 .comic-book-card h4 {
   overflow-x: auto;
 }
