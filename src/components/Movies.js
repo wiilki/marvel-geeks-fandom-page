@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useIMDBData, useIMDBMovieDetails } from '../hooks/useIMDBData';
-import MovieModal from './MovieModal';
+import MovieModal from './movieModal';
 
 const Movies = ({ characterAPI }) => {
     const { searchResults, loading, error } = useIMDBData(characterAPI);

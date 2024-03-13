@@ -18,14 +18,14 @@ function Search() {
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {query && <h2>Cinematic</h2>}
-      {/* Render the Movies component if there's a valid query */}
-      {query && <Movies characterAPI={query} />}
-
+      {/* Render Comics */}
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
       {query && data && data.length > 0 && <h2>Visual Media</h2>}
       {data && <Comic characters={data} />}
+      {/* Render Movies */}
+      {query && <h2>Cinematic</h2>}
+      {query && <Movies characterAPI={query} />}
     </section>
   );
 }
