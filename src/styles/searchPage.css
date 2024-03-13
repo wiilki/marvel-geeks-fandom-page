@@ -68,7 +68,6 @@ input[type="text"] {
   min-width: 200px;
   border: 1px solid #ddd;
   border-radius: 10px;
-  overflow: hidden;
   padding: 5px;
   box-shadow: 0px 0px 9px 1px white;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
