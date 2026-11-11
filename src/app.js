@@ -1,0 +1,281 @@
+import { allItems, byKey, characters, comics, movies, featuredIds, findCharacter } from "./catalog.js";
+
+const $ = selector => document.querySelector(selector);
+const storageKey = "marvel-geeks-favorites-v2";
+const permittedTypes = new Set(["all", "characters", "comics", "movies"]);
+const params = new URLSearchParams(location.search);
+const initialType = params.get("type");
+const state = {
+  query: (params.get("q") || "").slice(0, 120),
+  type: permittedTypes.has(initialType) ? initialType : "all",
+  facet: "",
+  sort: "featured",
+  savedOnly: params.get("saved") === "1",
+  favorites: readFavorites()
+};
+let lastFocused = null;
+let lookupTimer = null;
+let lookupAbort = null;
+let lookupSerial = 0;
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[char]);
+}
+function norm(value) {
+  return String(value ?? "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+}
+function keyFor(item) { return item.type + ":" + item.id; }
+function readFavorites() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    return new Set(Array.isArray(saved) ? saved.filter(key => typeof key === "string" && byKey.has(key)) : []);
+  } catch { return new Set(); }
+}
+function persistFavorites() {
+  try { localStorage.setItem(storageKey, JSON.stringify([...state.favorites])); } catch {}
+}
+function setUrl() {
+  const url = new URL(location.href);
+  url.searchParams.delete("q");
+  url.searchParams.delete("type");
+  url.searchParams.delete("saved");
+  if (state.query.trim()) url.searchParams.set("q", state.query.trim());
+  if (state.type !== "all") url.searchParams.set("type", state.type);
+  if (state.savedOnly) url.searchParams.set("saved", "1");
+  history.replaceState(null, "", url.pathname + url.search + url.hash);
+}
+function searchableText(item) {
+  const cast = (item.cast || []).map(id => findCharacter(id)?.name || id).join(" ");
+  return norm([item.title,item.subtitle,item.summary,item.team,item.first,item.phase,item.era,item.year,
+    ...(item.powers || []),cast].join(" "));
+}
+function currentItems() {
+  let items = allItems.filter(item => {
+    if (state.type !== "all" && item.type !== state.type) return false;
+    if (state.savedOnly && !state.favorites.has(keyFor(item))) return false;
+    if (state.facet && facetFor(item) !== state.facet) return false;
+    if (state.query.trim() && !searchableText(item).includes(norm(state.query.trim()))) return false;
+    return true;
+  });
+  if (state.sort === "az") items.sort((a,b) => a.title.localeCompare(b.title));
+  if (state.sort === "new") items.sort((a,b) => (b.year || 0) - (a.year || 0) || a.title.localeCompare(b.title));
+  if (state.sort === "featured") items.sort((a,b) => {
+    const left = featuredIds.indexOf(a.id), right = featuredIds.indexOf(b.id);
+    if (left !== -1 || right !== -1) return (left === -1 ? 999 : left) - (right === -1 ? 999 : right);
+    return 0;
+  });
+  return items;
+}
+function facetFor(item) {
+  if (item.type === "characters") return item.team;
+  if (item.type === "comics") return item.era;
+  if (item.type === "movies") return item.phase;
+  return "";
+}
+function art(item, size="") {
+  const color = item.color || (item.type === "movies" ? "#d8a35c" : "#bd8bca");
+  const tag = item.type === "characters" ? (item.mark || item.name.slice(0,2)) : item.type === "movies" ? "FILM" : "ISSUE";
+  const label = item.type === "characters" ? item.name : (item.type === "movies" ? "MARVEL CINEMA" : "THE COMIC ARCHIVE");
+  return '<div class="cover-art ' + escapeHtml(size) + '" style="--cover:' + escapeHtml(color) + '">' +
+    '<span class="cover-dots"></span><span class="cover-ring"></span><span class="cover-symbol">' +
+    escapeHtml(tag) + '</span><span class="cover-kicker">' + escapeHtml(label) +
+    '</span><span class="cover-slash" aria-hidden="true"></span></div>';
+}
+function icon(kind) {
+  const paths = {
+    heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',
+    arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
+    search:'<circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 5 5"/>'
+  };
+  return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + paths[kind] + '</svg>';
+}
+function itemCard(item, compact=false) {
+  const key = keyFor(item), saved = state.favorites.has(key);
+  const kind = {characters:"Character",comics:"Comic",movies:"Film"}[item.type];
+  const meta = item.type === "characters" ? item.team : item.type === "movies" ? item.year + " · Film" : item.year + " · Comic";
+  return '<article class="archive-card' + (compact ? ' archive-card--compact' : '') + '">' +
+    '<button class="card-open" data-open="' + escapeHtml(key) + '" aria-label="Explore ' + escapeHtml(item.title) + '">' +
+    art(item) + '<span class="card-body"><span class="eyebrow card-type">' + escapeHtml(kind) + ' <span class="tiny-dot"></span> ' +
+    escapeHtml(meta) + '</span><strong class="card-title">' + escapeHtml(item.title) + '</strong>' +
+    '<span class="card-summary">' + escapeHtml(item.summary) + '</span><span class="card-explore">Explore dossier ' + icon("arrow") + '</span></span></button>' +
+    '<button class="save-button' + (saved ? ' is-saved' : '') + '" data-favorite="' + escapeHtml(key) +
+    '" aria-pressed="' + saved + '" aria-label="' + (saved ? "Remove " : "Save ") + escapeHtml(item.title) + (saved ? " from" : " to") +
+    ' favorites" title="' + (saved ? "Remove from" : "Add to") + ' favorites">' + icon("heart") + '</button></article>';
+}
+function renderFeatured() {
+  $("#featuredGrid").innerHTML = featuredIds.map(id => characters.find(item => item.id === id)).filter(Boolean)
+    .map(item => itemCard(byKey.get("characters:" + item.id),true)).join("");
+}
+function renderFacets() {
+  const bar = $("#facetBar");
+  if (state.type === "all") { bar.hidden = true; state.facet = ""; return; }
+  bar.hidden = false;
+  const values = [...new Set(allItems.filter(i => i.type === state.type).map(facetFor))].sort();
+  if (state.facet && !values.includes(state.facet)) state.facet = "";
+  bar.innerHTML = '<span class="facet-caption">REFINE</span><button class="facet-chip' + (!state.facet ? ' active' : '') +
+    '" data-facet="" aria-pressed="' + (!state.facet) + '">All</button>' +
+    values.map(value => '<button class="facet-chip' + (state.facet === value ? ' active' : '') +
+    '" data-facet="' + escapeHtml(value) + '" aria-pressed="' + (state.facet === value) + '">' + escapeHtml(value) + '</button>').join("");
+}
+function render() {
+  for (const btn of document.querySelectorAll("[data-type]")) {
+    const active = btn.dataset.type === state.type;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-selected",String(active));
+    btn.tabIndex = active ? 0 : -1;
+  }
+  renderFacets();
+  const items = currentItems();
+  $("#resultsGrid").innerHTML = items.map(item => itemCard(item)).join("");
+  $("#resultsCount").textContent = items.length + " " + (items.length === 1 ? "result" : "results");
+  const heading = state.savedOnly ? "Your saved archive" :
+    state.query.trim() ? 'Results for “' + state.query.trim() + '”' :
+    ({all:"The complete collection",characters:"Character dossiers",comics:"The comic archive",movies:"The cinematic universe"})[state.type];
+  $("#resultsHeading").textContent = heading;
+  $("#emptyState").hidden = items.length > 0;
+  $("#resultsGrid").hidden = items.length === 0;
+  $("#favoritesCount").textContent = state.favorites.size;
+  $("#favoritesToggle").classList.toggle("active",state.savedOnly);
+  $("#favoritesToggle").setAttribute("aria-pressed",String(state.savedOnly));
+  $("#clearSearch").hidden = !state.query;
+  $("#sortSelect").value = state.sort;
+  setUrl();
+}
+function typeLabel(type) { return ({characters:"CHARACTER FILE",comics:"COMIC FILE",movies:"FILM FILE"})[type] || "FILE"; }
+function linkedItem(item) {
+  return '<button class="related-link" data-open="' + escapeHtml(keyFor(item)) + '">' +
+    '<span>' + escapeHtml(item.title) + '</span>' + icon("arrow") + '</button>';
+}
+function openDetail(key) {
+  const item = byKey.get(key);
+  if (!item) return;
+  const saved = state.favorites.has(key);
+  let facts = [];
+  let relatedCharacters = [];
+  let relatedStories = [];
+  if (item.type === "characters") {
+    facts = [["Identity",item.alias],["Affiliation",item.team],["First appearance",item.first]];
+    relatedStories = [...comics,...movies].filter(i => i.cast.includes(item.id)).slice(0,12)
+      .map(i => byKey.get((i.year && "phase" in i ? "movies:" : "comics:") + i.id)).filter(Boolean);
+  } else {
+    facts = item.type === "movies" ? [["Released",item.year],["Collection",item.phase],["Directed by",item.director]] :
+      [["Published",item.year],["Era",item.era]];
+    relatedCharacters = (item.cast || []).map(id => byKey.get("characters:" + id)).filter(Boolean);
+  }
+  const abilities = item.powers?.length ? '<div class="detail-section"><h3>Abilities & traits</h3><div class="detail-tags">' +
+    item.powers.map(p => '<span>' + escapeHtml(p) + '</span>').join("") + '</div></div>' : "";
+  const related = (relatedCharacters.length || relatedStories.length) ? '<div class="detail-section"><h3>' +
+    (relatedStories.length ? "Connected comics & films" : "Featured characters") + '</h3><div class="related-list">' +
+    (relatedStories.length ? relatedStories : relatedCharacters).map(linkedItem).join("") + '</div></div>' : "";
+  const wikiSearch = 'https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(item.title + " Marvel");
+  $("#detailBody").innerHTML = '<div class="detail-layout">' +
+    art(item,"cover-art--detail") + '<div class="detail-copy"><span class="eyebrow">MARVEL GEEKS / ' + typeLabel(item.type) + '</span>' +
+    '<h2 id="detailTitle">' + escapeHtml(item.title) + '</h2><p class="detail-lede">' + escapeHtml(item.summary) + '</p>' +
+    '<dl class="fact-grid">' + facts.map(([name,value]) => '<div><dt>' + escapeHtml(name) + '</dt><dd>' + escapeHtml(value) + '</dd></div>').join("") +
+    '</dl>' + abilities + related +
+    '<div class="detail-actions"><button class="button button--primary" data-favorite="' + escapeHtml(key) + '">' +
+    (saved ? "♥ Saved to favorites" : "♡ Save to favorites") + '</button><a class="button button--outline" href="' +
+    wikiSearch + '" target="_blank" rel="noopener noreferrer">Read more ↗</a></div></div></div>';
+  const dialog = $("#detailDialog");
+  if (!dialog.open) { lastFocused = document.activeElement; dialog.showModal(); }
+}
+function closeDetail() { const dialog = $("#detailDialog"); if (dialog.open) dialog.close(); }
+function toggleFavorite(key) {
+  if (!byKey.has(key)) return;
+  if (state.favorites.has(key)) state.favorites.delete(key); else state.favorites.add(key);
+  persistFavorites();
+  render();
+  if ($("#detailDialog").open) openDetail(keyForModal());
+}
+function keyForModal() {
+  const button = $("#detailBody [data-favorite]");
+  return button?.dataset.favorite || "";
+}
+function setType(type) {
+  if (!permittedTypes.has(type)) return;
+  state.type = type;
+  state.facet = "";
+  render();
+}
+function scheduleLiveLookup() {
+  clearTimeout(lookupTimer);
+  lookupAbort?.abort();
+  const serial = ++lookupSerial;
+  const term = state.query.trim();
+  const box = $("#liveSection");
+  if (term.length < 3) { box.hidden = true; return; }
+  box.hidden = false;
+  $("#liveStatus").textContent = "Checking Wikipedia for additional reading…";
+  $("#liveResults").innerHTML = "";
+  lookupTimer = setTimeout(async () => {
+    lookupAbort = new AbortController();
+    const endpoint = new URL("https://en.wikipedia.org/w/api.php");
+    for (const [k,v] of Object.entries({
+      action:"query",list:"search",srsearch:term + " Marvel",srnamespace:"0",srlimit:"5",format:"json",origin:"*"
+    })) endpoint.searchParams.set(k,v);
+    try {
+      const res = await fetch(endpoint,{signal:lookupAbort.signal,credentials:"omit"});
+      if (!res.ok) throw new Error("Lookup unavailable");
+      const json = await res.json();
+      if (serial !== lookupSerial) return;
+      const results = Array.isArray(json?.query?.search) ? json.query.search : [];
+      $("#liveStatus").textContent = results.length ? "Open encyclopedia references · External links" : "No encyclopedia matches found.";
+      $("#liveResults").innerHTML = results.map(page => {
+        const title = String(page.title || "");
+        const url = "https://en.wikipedia.org/wiki/" + encodeURIComponent(title.replace(/ /g,"_"));
+        return '<a class="wiki-result" href="' + url + '" target="_blank" rel="noopener noreferrer"><span>' +
+          escapeHtml(title) + '</span><span>Wikipedia ↗</span></a>';
+      }).join("");
+    } catch (error) {
+      if (error.name !== "AbortError" && serial === lookupSerial)
+        $("#liveStatus").textContent = "Live references are unavailable. The built-in archive works offline.";
+    }
+  },600);
+}
+
+document.addEventListener("click",event => {
+  const target = event.target.closest("button");
+  if (!target) return;
+  if (target.dataset.open) { openDetail(target.dataset.open); return; }
+  if (target.dataset.favorite) { toggleFavorite(target.dataset.favorite); return; }
+  if (target.dataset.type) { setType(target.dataset.type); return; }
+  if (target.hasAttribute("data-facet")) { state.facet = target.dataset.facet; render(); return; }
+  const action = target.dataset.action;
+  if (action === "focus-search") { $("#searchInput").focus(); $("#discover").scrollIntoView({behavior:"smooth"}); }
+  if (action === "random") {
+    const items = currentItems().length ? currentItems() : allItems;
+    openDetail(keyFor(items[Math.floor(Math.random()*items.length)]));
+  }
+  if (action === "clear-search") {
+    state.query = ""; $("#searchInput").value = ""; scheduleLiveLookup(); render(); $("#searchInput").focus();
+  }
+  if (action === "reset") {
+    state.query = ""; state.type = "all"; state.facet = ""; state.savedOnly = false;
+    $("#searchInput").value = ""; scheduleLiveLookup(); render();
+  }
+  if (action === "favorites") { state.savedOnly = !state.savedOnly; render(); $("#discover").scrollIntoView({behavior:"smooth"}); }
+  if (action === "close-dialog") closeDetail();
+});
+$("#searchInput").addEventListener("input",event => {
+  state.query = event.target.value.slice(0,120);
+  if (event.target.value.length > 120) event.target.value = state.query;
+  render();
+  scheduleLiveLookup();
+});
+$("#sortSelect").addEventListener("change",event => { state.sort = event.target.value; render(); });
+$("#detailDialog").addEventListener("click",event => {
+  if (event.target === $("#detailDialog")) closeDetail();
+});
+$("#detailDialog").addEventListener("close",() => { lastFocused?.focus?.(); lastFocused = null; });
+document.addEventListener("keydown",event => {
+  if (event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey &&
+      !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "") && !$("#detailDialog").open) {
+    event.preventDefault(); $("#searchInput").focus(); $("#discover").scrollIntoView({behavior:"smooth"});
+  }
+});
+$("#searchInput").value = state.query;
+$("#collectionCount").textContent = allItems.length;
+renderFeatured();
+render();
+scheduleLiveLookup();
