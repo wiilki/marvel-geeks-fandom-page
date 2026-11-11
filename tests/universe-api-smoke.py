@@ -24,6 +24,12 @@ print("MCUAPI movies:",movies.get("total"),"sample:",movies["data"][0]["title"])
 chars=request(base+"/characters?page=1&limit=2")
 assert isinstance(chars.get("data"),list) and chars["data"],"Missing character collection"
 print("MCUAPI characters:",chars.get("total"),"sample:",chars["data"][0]["name"])
+movie_characters=request(base+"/characters/movie/1")
+assert isinstance(movie_characters,list), "Movie -> character relations must return an array"
+character_movies=request(base+"/characters/1/movies")
+assert isinstance(character_movies,list), "Character -> movie relations must return an array"
+print("MCUAPI relations:",len(movie_characters),"characters /",len(character_movies),"movies")
+
 mirror="https://cdn.jsdelivr.net/gh/AugustoMarcelo/mcuapi@master/data"
 static_movies=request(mirror+"/movies.json")
 static_chars=request(mirror+"/characters.json")
