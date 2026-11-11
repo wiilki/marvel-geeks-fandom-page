@@ -11,9 +11,29 @@ A complete, no-build rewrite of the original Marvel Geeks project. Explore a cur
 - Open detailed character, comic and film panels; navigate through related characters and stories.
 - Save favorites locally on your browser (no account), view your saved list and share search links.
 - Search additional Wikipedia references when connected to the internet (clearly labeled as external search results).
+- **NEW: Browse thousands of Marvel comic issues through the independent [Marvel Metadata API](https://github.com/emreparker/marvel-comics)**. Browse paginated issues, search comic titles, inspect full issue metadata including creator credits and optional cover, navigate related series/creator issues and open the official Marvel comic page.
+- Save remote comic issues as local bookmarks. Remote bookmarks are separate from the built-in editorial archive favorites.
 - Mobile-first design, keyboard shortcuts, reduced-motion support and semantic, accessible dialogs.
 
-**Important distinction from the 2022–2024 version:** The old site called the official Marvel and RapidAPI movie APIs from the browser, using private keys in client-side variables. That cannot be done securely on public static hosting: build-time frontend "secrets" are still visible to visitors. This rebuild replaces those unstable/dependent lookups with a working, curated collection and separate Wikipedia reading results. It does not claim to be a complete or live official Marvel catalog. An official live Marvel/IMDb integration would require a separate server-side proxy and API arrangements.
+**Important distinction from the 2022–2024 version:** The old site called the official Marvel and RapidAPI movie APIs from the browser, using private keys in client-side variables. That cannot be done securely on public static hosting: build-time frontend "secrets" are still visible to visitors. This rebuild replaces those unstable/dependent lookups with a working, curated collection and separate Wikipedia reading results. It does not claim to be a complete or live official Marvel catalog. An official live Marvel/IMDb integration would require a separate server-side proxy and API arrangements. The new third-party comics API covers comics metadata, not movies or all characters.
+
+
+## Unofficial Marvel Comics API integration
+
+The site now integrates [emreparker/marvel-comics](https://github.com/emreparker/marvel-comics) (MIT-licensed API implementation), which documents **37,526 comics (1939–2025)**, 6,990 series and 4,341 creators. The published data is a third-party, historical metadata snapshot, **not** a complete official/live-updated Marvel character and movie feed. The site shows this source separately from the original 66-entry editorial collection.
+
+- Public hosted service: https://marvel.emreparker.com
+- Browser GET requests (no API key or paid provider) to /v1/issues, /v1/search/issues, /v1/issues/{id}, /v1/series/{id}/issues and /v1/creators/{id}/issues
+- Cross-origin GET supported by the upstream project's FastAPI configuration; the server's current uptime and CORS are verified by a separate PR smoke check.
+- Delayed search, request cancellation, small 18-issue pages, cached requests, 12-second timeouts, safe link/image host allowlisting, visible retry and fallback behavior.
+- No API data or large database is copied to this repository. The user's own local bookmarks persist in the browser, and do not require an account.
+- The third-party service is owned and operated by another maintainer, can become unavailable or enforce its 60 requests/minute limit, and cannot guarantee Marvel's rights to comic metadata or cover art. The UI credits the provider and links to official comic pages when available.
+- If the external API is unavailable, the offline editorial catalog and other features remain functional.
+- The upstream source's permissive MIT software license applies to **code**, not Marvel's underlying copyrighted content, artwork, trademarks or a guarantee of API availability.
+
+Development and CI:
+- npm run check executes the fully offline, dependency-free static/JavaScript tests.
+- The API availability/CORS probe runs separately in .github/workflows/api-smoke.yml on relevant PR changes, or manually by workflow dispatch. It does not run on every normal push (so external downtime doesn't block ordinary site builds).
 
 ## Free publishing (GitHub Pages, recommended)
 
@@ -49,7 +69,7 @@ There is no build step and no dependency installation.
 
 Add or edit data in src/catalog.js. characters, comics and movies are separate arrays. For comics and movies, cast contains character IDs from the characters array. Keep IDs unique; npm test checks references.
 
-Files: index.html (semantic page), styles.css (visual system), src/app.js (search, favorites, dialog and Wikipedia lookup), src/catalog.js (content), tests/ (automated checks).
+Files: index.html (semantic page), styles.css and styles-live.css (visual system), src/app.js (local archive and Wikipedia), src/catalog.js (built-in content), src/marvel-api.js (third-party API transport, normalization and validation), src/live-comics.js (live comic UI and saved issues), tests/ (automated checks).
 
 ## Privacy, attribution and scope
 

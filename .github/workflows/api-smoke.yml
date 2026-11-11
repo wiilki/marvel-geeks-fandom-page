@@ -1,0 +1,23 @@
+name: Public Marvel API live check
+
+on:
+  pull_request:
+    paths:
+      - 'src/marvel-api.js'
+      - 'src/live-comics.js'
+      - 'tests/api-smoke.py'
+      - '.github/workflows/api-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: API availability and CORS
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check live metadata endpoints without credentials
+        run: python3 tests/api-smoke.py

@@ -9,10 +9,11 @@
   <meta property="og:title" content="Marvel Geeks — Your Universe, Unlocked">
   <meta property="og:description" content="A fan-made, searchable Marvel character, comic and film archive.">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://en.wikipedia.org; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.annihil.us; connect-src 'self' https://en.wikipedia.org https://marvel.emreparker.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles-live.css">
   <title>Marvel Geeks — Your Universe, Unlocked</title>
   <script type="module" src="./src/app.js"></script>
 </head>
@@ -108,6 +109,36 @@
           <p>No matching entries in the starter collection. Try another name or clear filters.</p>
           <button type="button" class="button button--primary" data-action="reset">RESET THE ARCHIVE</button>
         </div>
+
+        <section id="marvelLiveSection" class="api-section" aria-labelledby="apiSectionTitle">
+          <div class="api-intro">
+            <div>
+              <span class="eyebrow">THE EXPANDED UNIVERSE / COMMUNITY API</span>
+              <h3 id="apiSectionTitle">37,000+ COMIC ISSUES. ONE ARCHIVE.</h3>
+              <p>Explore a community-maintained catalog of Marvel comic issue metadata, series, creators and official reading links. The published dataset spans 1939–2025.</p>
+            </div>
+            <div class="api-source"><span class="api-pulse" aria-hidden="true"></span><div><strong>COMMUNITY SOURCE</strong><small>Unofficial Marvel Metadata API</small></div></div>
+          </div>
+          <div class="api-topbar">
+            <div>
+              <h4 id="apiResultsHeading">Explore the comic index</h4>
+              <p id="apiSourceDescription">Browse comic issues from the independent Marvel Metadata API.</p>
+            </div>
+            <div class="api-top-actions">
+              <button id="apiBack" class="api-small-button" type="button" hidden>← BACK TO INDEX</button>
+              <button id="apiSavedToggle" class="api-small-button" type="button" aria-pressed="false">♥ SAVED COMICS <span id="apiSavedCount">0</span></button>
+            </div>
+          </div>
+          <p id="apiStatus" class="api-status" role="status" aria-live="polite">Preparing comic metadata…</p>
+          <div id="apiResults" class="api-results" aria-label="Unofficial comics API results"></div>
+          <div id="apiEmpty" class="api-empty" hidden>
+            <p id="apiEmptyText">No comics returned.</p>
+            <button id="apiRetry" type="button" class="button button--outline" hidden>RETRY COMICS API</button>
+          </div>
+          <div class="api-loadmore-wrap"><button id="apiLoadMore" class="button button--outline" type="button" hidden>LOAD MORE COMICS</button></div>
+          <p class="api-disclaimer">Data sourced from <a href="https://github.com/emreparker/marvel-comics" rel="noopener noreferrer" target="_blank">Marvel Metadata API ↗</a>, an independent, MIT-licensed fan project. This is not the official Marvel API. Entries and availability depend on the third-party service. Our curated collection above remains available if the API is down.</p>
+        </section>
+
         <section id="liveSection" class="live-section" aria-labelledby="liveTitle" hidden>
           <div class="live-header"><h4 id="liveTitle">BEYOND THE COLLECTION</h4><span>Wikipedia / independently maintained</span></div>
           <p id="liveStatus" class="live-status" role="status"></p>
