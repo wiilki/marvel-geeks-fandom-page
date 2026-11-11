@@ -1,0 +1,11 @@
+{
+  "name": "Marvel Geeks Fan Archive",
+  "short_name": "Marvel Geeks",
+  "description": "Explore Marvel characters, comics and films in an independent fan archive.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090b12",
+  "theme_color": "#ee3348",
+  "icons": [{"src":"./assets/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
