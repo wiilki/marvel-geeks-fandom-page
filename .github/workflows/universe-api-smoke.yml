@@ -1,0 +1,23 @@
+name: Marvel movie and character APIs live check
+
+on:
+  pull_request:
+    paths:
+      - 'src/universe-api.js'
+      - 'src/universe-browser.js'
+      - 'tests/universe-api-smoke.py'
+      - '.github/workflows/universe-api-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Live MCU, CDN and superhero browser access
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test keyless API endpoints and GitHub Pages CORS
+        run: python3 tests/universe-api-smoke.py

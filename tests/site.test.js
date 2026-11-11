@@ -11,7 +11,7 @@ test("entry page includes all interactive mount points", () => {
     assert.ok(html.includes('id="' + id + '"'),"missing DOM element " + id);
 });
 test("all static assets are present and linked by relative URL", () => {
-  for (const filename of ["src/app.js","src/catalog.js","src/marvel-api.js","src/live-comics.js","styles.css","styles-live.css","assets/favicon.svg","manifest.webmanifest",".nojekyll"])
+  for (const filename of ["src/app.js","src/catalog.js","src/marvel-api.js","src/live-comics.js","src/universe-api.js","src/universe-browser.js","styles.css","styles-live.css","styles-universe.css","assets/favicon.svg","manifest.webmanifest",".nojekyll"])
     assert.ok(existsSync(new URL("../" + filename, import.meta.url)),filename + " missing");
   assert.ok(html.includes('src="./src/app.js"'));
   assert.ok(html.includes('href="./styles.css"'));
@@ -35,4 +35,15 @@ test("third-party comics use public API and remain visually separate", () => {
   assert.ok(html.includes('id="marvelLiveSection"'));
   assert.ok(app.includes('syncComicsBrowser'));
   assert.ok(html.includes('Data sourced from'));
+});
+
+test("movie and character explorer is wired and external endpoints are limited", () => {
+  assert.ok(html.includes('id="universeSection"'));
+  assert.ok(html.includes('href="./styles-universe.css"'));
+  assert.ok(html.includes('https://mcuapi.up.railway.app'));
+  assert.ok(html.includes('https://cdn.jsdelivr.net'));
+  assert.ok(html.includes('https://akabab.github.io'));
+  assert.ok(app.includes("syncUniverseBrowser"));
+  assert.ok(html.includes("Superhero API"));
+  assert.ok(html.includes("MCUAPI"));
 });

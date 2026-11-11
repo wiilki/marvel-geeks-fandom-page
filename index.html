@@ -9,11 +9,12 @@
   <meta property="og:title" content="Marvel Geeks — Your Universe, Unlocked">
   <meta property="og:description" content="A fan-made, searchable Marvel character, comic and film archive.">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.annihil.us; connect-src 'self' https://en.wikipedia.org https://marvel.emreparker.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.annihil.us https://res.cloudinary.com https://image.tmdb.org https://cdn.jsdelivr.net; connect-src 'self' https://en.wikipedia.org https://marvel.emreparker.com https://mcuapi.up.railway.app https://cdn.jsdelivr.net https://akabab.github.io; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./styles-live.css">
+  <link rel="stylesheet" href="./styles-universe.css">
   <title>Marvel Geeks — Your Universe, Unlocked</title>
   <script type="module" src="./src/app.js"></script>
 </head>
@@ -109,6 +110,38 @@
           <p>No matching entries in the starter collection. Try another name or clear filters.</p>
           <button type="button" class="button button--primary" data-action="reset">RESET THE ARCHIVE</button>
         </div>
+
+        <section id="universeSection" class="universe-section" aria-labelledby="universeTitle">
+          <div class="universe-intro">
+            <div>
+              <span class="eyebrow">THE EXPANDED UNIVERSE / NO API KEYS</span>
+              <h3 id="universeTitle">MEET EVERY SIDE OF MARVEL.</h3>
+              <p>Browse Marvel films, their on-screen characters and the comic-book counterparts behind the legends. Data comes from independent public APIs; our original collection is always available above.</p>
+            </div>
+            <div class="universe-source-seal"><span class="universe-source-dot"></span> FREE PUBLIC DATA</div>
+          </div>
+          <div class="universe-tabs" role="group" aria-label="Expanded Marvel sources">
+            <button type="button" data-u-kind="movies" aria-pressed="true" class="active">🎬 MOVIES</button>
+            <button type="button" data-u-kind="screen" aria-pressed="false">✦ SCREEN CHARACTERS</button>
+            <button type="button" data-u-kind="comics" aria-pressed="false">⚡ COMIC CHARACTERS</button>
+          </div>
+          <div class="universe-toolbar">
+            <div class="universe-toolbar-title"><h4 id="universeHeading">Marvel films</h4><span>Data-driven archive · details & related appearances</span></div>
+            <div class="universe-toolbar-controls">
+              <label>SHOW <select id="universeScope" aria-label="Filter expanded universe"></select></label>
+              <label>SORT <select id="universeSort" aria-label="Sort expanded universe"><option value="featured">Default</option><option value="az">A–Z</option><option value="new">Newest first</option><option value="old">Oldest first</option></select></label>
+              <button type="button" class="universe-saved-toggle" id="universeSaved" aria-pressed="false">♥ SAVED <span id="universeSavedCount">0</span></button>
+            </div>
+          </div>
+          <p id="universeStatus" class="universe-status" role="status" aria-live="polite">Loading metadata…</p>
+          <div id="universeResults" class="universe-results" aria-label="Expanded movie and character results"></div>
+          <div id="universeEmpty" class="universe-empty" hidden>
+            <p id="universeEmptyCopy">No matching entries.</p>
+            <button id="universeRetry" type="button" class="button button--outline" hidden>RETRY SOURCE</button>
+          </div>
+          <div class="universe-loadmore"><button id="universeMore" type="button" class="button button--outline" hidden>SHOW MORE</button></div>
+          <p class="universe-credit">Movie and screen-character metadata: <a href="https://github.com/AugustoMarcelo/mcuapi" target="_blank" rel="noopener noreferrer">MCUAPI ↗</a> (independent service with a public CDN mirror). Comic character metadata: <a href="https://github.com/akabab/superhero-api" target="_blank" rel="noopener noreferrer">Superhero API ↗</a> (Marvel Comics entries only). Subjective character power ratings are not official. Neither provider is affiliated with Marvel or Disney; artwork and marks remain with their rights holders.</p>
+        </section>
 
         <section id="marvelLiveSection" class="api-section" aria-labelledby="apiSectionTitle">
           <div class="api-intro">
