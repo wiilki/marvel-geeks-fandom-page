@@ -11,12 +11,28 @@ A complete, no-build rewrite of the original Marvel Geeks project. Explore a cur
 - Open detailed character, comic and film panels; navigate through related characters and stories.
 - Save favorites locally on your browser (no account), view your saved list and share search links.
 - Search additional Wikipedia references when connected to the internet (clearly labeled as external search results).
-- **NEW: Browse thousands of Marvel comic issues through the independent [Marvel Metadata API](https://github.com/emreparker/marvel-comics)**. Browse paginated issues, search comic titles, inspect full issue metadata including creator credits and optional cover, navigate related series/creator issues and open the official Marvel comic page.
+- **Browse thousands of Marvel comic issues through the independent [Marvel Metadata API](https://github.com/emreparker/marvel-comics)**. Browse paginated issues, search comic titles, inspect full issue metadata including creator credits and optional cover, navigate related series/creator issues and open the official Marvel comic page.
 - Save remote comic issues as local bookmarks. Remote bookmarks are separate from the built-in editorial archive favorites.
+- Browse MCU movies, screen portrayals and Marvel Comics superhero profiles through two additional no-key public APIs.
 - Mobile-first design, keyboard shortcuts, reduced-motion support and semantic, accessible dialogs.
 
 **Important distinction from the 2022–2024 version:** The old site called the official Marvel and RapidAPI movie APIs from the browser, using private keys in client-side variables. That cannot be done securely on public static hosting: build-time frontend "secrets" are still visible to visitors. This rebuild replaces those unstable/dependent lookups with a working, curated collection and separate Wikipedia reading results. It does not claim to be a complete or live official Marvel catalog. An official live Marvel/IMDb integration would require a separate server-side proxy and API arrangements. The new third-party comics API covers comics metadata, not movies or all characters.
 
+
+
+## Expanded movie and character APIs (2026)
+
+**MCUAPI** — https://github.com/AugustoMarcelo/mcuapi — keyless REST metadata about Marvel cinematic titles and their on-screen characters.
+- The provider's September 7, 2026 mirror reports **75 movies** and **375 on-screen characters**; these are provider counts, not guarantees of comprehensive or up-to-the-minute coverage.
+- The site calls live GET /api/v1/movies and /api/v1/characters with bounded pagination, then uses the provider's published public jsDelivr JSON snapshot if its live API fails or rate limits.
+- Movies show year, summary, director, phase, saga, and IMDb links where available. Screen characters show actor, alias and continuity information. Related film ↔ character connections are queried on demand from the live API.
+- The provider allows no-key read-only calls, publishes a 100-request/minute cap, and may include non-core MCU films and multiverse variants. Film metadata and dates belong to the provider, not Marvel.
+
+**Superhero API** — https://github.com/akabab/superhero-api — a publicly hosted, keyless superhero dataset spanning publishers. The publicly tested endpoint (November 11, 2026) returned **563 total characters**, including **269 Marvel Comics characters**; its documentation still advertises 731. We filter its biography publisher field to **Marvel Comics only**, so DC characters don't leak into the Marvel-only UI. Data includes name, full identity, appearance, affiliation, and community-rated powerstats, plus optional portraits. The superhero API is a static snapshot, not a source of current story continuity. The project has an MIT code license; that does **not** grant copyright ownership or a license to Marvel's underlying images or characters. A jsDelivr mirror provides fallback hosting.
+
+**Site UX** — In Explore the Archive, select All, Movies or Characters, then scroll to Expanded Universe. Use the source tabs, filters, search field at the top, sort dropdown, and saved bookmarks. Saved items are kept locally in the visitor's browser. No signup, secrets, paid proxy or API plan is required.
+
+**Safety and reliability** — Two distinct variants (MCU screen portrayals versus Marvel Comics characters) are deliberately separate, because combining them would misrepresent character identities. External metadata is escaped for HTML, image hosts are allowlisted, requests have timeouts and caching, results are paged on-screen, and the curated site stays functional even if these third-party providers become unavailable. The live API and CORS checks are a separate pull-request workflow, not a requirement of normal site publishing. External poster/portrait assets have separate rights from the API code.
 
 ## Unofficial Marvel Comics API integration
 
@@ -69,7 +85,7 @@ There is no build step and no dependency installation.
 
 Add or edit data in src/catalog.js. characters, comics and movies are separate arrays. For comics and movies, cast contains character IDs from the characters array. Keep IDs unique; npm test checks references.
 
-Files: index.html (semantic page), styles.css and styles-live.css (visual system), src/app.js (local archive and Wikipedia), src/catalog.js (built-in content), src/marvel-api.js (third-party API transport, normalization and validation), src/live-comics.js (live comic UI and saved issues), tests/ (automated checks).
+Files: index.html (semantic page), styles.css and styles-live.css (visual system), src/app.js (local archive and Wikipedia), src/catalog.js (built-in content), src/marvel-api.js (comics metadata client), src/live-comics.js (comic issue browser), src/universe-api.js (MCU + superhero clients), src/universe-browser.js (movie/character browser), styles-universe.css (expanded archive styling), tests/ (automated checks).
 
 ## Privacy, attribution and scope
 

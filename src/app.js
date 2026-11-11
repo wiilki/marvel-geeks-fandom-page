@@ -1,5 +1,6 @@
 import { allItems, byKey, characters, comics, movies, featuredIds, findCharacter } from "./catalog.js";
 import { syncComicsBrowser } from "./live-comics.js";
+import { syncUniverseBrowser } from "./universe-browser.js";
 
 const $ = selector => document.querySelector(selector);
 const storageKey = "marvel-geeks-favorites-v2";
@@ -143,6 +144,7 @@ function render() {
   $("#sortSelect").value = state.sort;
   setUrl();
   syncComicsBrowser({query:state.query,type:state.type,savedOnly:state.savedOnly});
+  syncUniverseBrowser({query:state.query,type:state.type,savedOnly:state.savedOnly});
 }
 function typeLabel(type) { return ({characters:"CHARACTER FILE",comics:"COMIC FILE",movies:"FILM FILE"})[type] || "FILE"; }
 function linkedItem(item) {
