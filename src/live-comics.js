@@ -155,6 +155,7 @@ function setViewHeading() {
   back.hidden = !currentView;
 }
 export function syncComicsBrowser(nextContext) {
+  const previousQuery = context.query;
   context = {
     query:String(nextContext?.query || "").slice(0,120),
     type:nextContext?.type || "all",
@@ -165,7 +166,7 @@ export function syncComicsBrowser(nextContext) {
   if (!show) { cancelRequest(); currentKey = ""; return; }
   if (currentView && currentView.parentQuery !== context.query.trim()) currentView = null;
   // Typing a new query leaves the bookmark-only view automatically.
-  if (savedMode && context.query.trim().length >= 2) savedMode = false;
+  if (savedMode && context.query !== previousQuery) savedMode = false;
   const key = listKey();
   if (key === currentKey) return;
   currentKey = key;
