@@ -6,7 +6,7 @@ on:
       - 'src/dossier-view.js'
       - 'src/official-voice-player.js'
       - 'styles.css'
-      - 'tests/dossier-browser.test.mjs'
+      - 'tests/dossier-visual-smoke.mjs'
       - '.github/workflows/dossier-browser-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -25,4 +25,4 @@ jobs:
       - name: Install headless Chromium
         run: npx playwright install --with-deps chromium
       - name: Verify actual rendered portrait and YouTube player behavior
-        run: node tests/dossier-browser.test.mjs
+        run: node tests/dossier-visual-smoke.mjs
