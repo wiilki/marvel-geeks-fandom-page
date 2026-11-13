@@ -284,3 +284,13 @@ svg { width:1.1em;height:1.1em; flex-shrink:0; }
 @media(max-width:550px){
   .archive-card--compact .cover-art--has-photo .cover-kicker {padding:19px 9px 10px;font-size:8px;}
 }
+
+/* Verified MCU movie posters and Marvel comic covers use their natural portrait
+ * proportions; the original cover-art illustration is always the fallback. */
+.cover-art--poster {aspect-ratio:2/3;}
+.cover-art--poster .cover-photo {object-fit:cover;object-position:center top;}
+.cover-art--detail.cover-art--poster {aspect-ratio:auto;}
+.cover-art--detail.cover-art--poster .cover-photo {object-fit:contain;object-position:center center;}
+@media(max-width:800px){
+  .cover-art--detail.cover-art--poster {height:330px;min-height:330px;}
+}
