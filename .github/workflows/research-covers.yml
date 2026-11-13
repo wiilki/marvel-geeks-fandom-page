@@ -1,17 +1,17 @@
-name: Editorial comic cover evidence (research)
+name: Probe comic cover title variants
 on:
   pull_request:
     paths:
-      - 'scripts/research_covers.py'
+      - 'scripts/probe_cover_titles.py'
       - '.github/workflows/research-covers.yml'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  research:
+  probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
-      - name: Match comic-issue covers without copying artwork
-        run: python3 -u scripts/research_covers.py
+      - name: Query historical comic issue title variants
+        run: python3 -u scripts/probe_cover_titles.py
