@@ -258,3 +258,29 @@ svg { width:1.1em;height:1.1em; flex-shrink:0; }
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after {scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;}
 }
+
+
+/* Source-verified character portraits in the original, featured and detail cards.
+ * Original graphic composition remains as the fallback when an image fails. */
+.cover-art--has-photo .cover-photo {
+  position:absolute;inset:0;width:100%;height:100%;display:block;
+  object-fit:cover;object-position:center 22%;z-index:2;background:#171b2b;
+}
+.cover-art--has-photo:not(.cover-art--image-failed) .cover-dots,
+.cover-art--has-photo:not(.cover-art--image-failed) .cover-ring,
+.cover-art--has-photo:not(.cover-art--image-failed) .cover-symbol,
+.cover-art--has-photo:not(.cover-art--image-failed) .cover-slash {opacity:0;}
+.cover-art--has-photo .cover-kicker {
+  z-index:3;left:0;right:0;bottom:0;padding:26px 14px 13px;
+  background:linear-gradient(0deg,#060911eb,transparent);
+  letter-spacing:.11em;font-size:9px;
+}
+.cover-art--image-failed .cover-photo {display:none;}
+.cover-art--detail.cover-art--has-photo .cover-photo {
+  object-fit:contain;object-position:center center;
+  background:radial-gradient(ellipse at center,#3b263d,#111522 80%);
+}
+.cover-art--detail.cover-art--has-photo .cover-kicker {padding:32px 24px 22px;font-size:11px;}
+@media(max-width:550px){
+  .archive-card--compact .cover-art--has-photo .cover-kicker {padding:19px 9px 10px;font-size:8px;}
+}

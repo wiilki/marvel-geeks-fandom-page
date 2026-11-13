@@ -25,7 +25,7 @@
 .universe-open {display:block;width:100%;height:100%;color:#fff;border:0;background:transparent;text-align:left;padding:0;}
 .universe-art {position:relative;aspect-ratio:.9;background:linear-gradient(145deg,#5e2742,#263851 58%,#080e18);overflow:hidden;display:grid;place-items:center;}
 .universe-art::before {content:"";position:absolute;inset:0;background:repeating-conic-gradient(from 12deg at center,#ffffff05 0 10deg,transparent 10deg 20deg);}
-.universe-art img {width:100%;height:100%;display:block;object-fit:cover;position:relative;z-index:1;}
+.universe-art img {width:100%;height:100%;display:block;object-fit:cover;position:absolute;inset:0;z-index:1;}
 .universe-art-mark {font:900 clamp(65px,9vw,120px) Impact,"Arial Black",sans-serif;letter-spacing:-.06em;transform:rotate(-11deg);text-shadow:8px 8px #171a32a8;color:#f9eddf;}
 .universe-art-label {position:absolute;z-index:2;left:10px;bottom:10px;background:#07101bbb;border:1px solid #ffffff58;color:#fff9ef;font-size:8px;font-weight:950;letter-spacing:.12em;padding:6px 8px;border-radius:4px;backdrop-filter:blur(4px);}
 .universe-card-copy {display:flex;flex-direction:column;min-height:179px;padding:15px;}
@@ -76,3 +76,13 @@
  .universe-relations{grid-template-columns:1fr;}
 }
 @media(prefers-reduced-motion:reduce){.universe-card{transition:none;}.universe-card:hover{transform:none;}}
+
+/* Keep the provider-agnostic initials artwork behind all portrait/poster
+ * images. The global error handler hides broken images without blank cards. */
+.universe-detail-art img {
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:auto;height:auto;max-width:calc(100% - 60px);max-height:calc(100% - 60px);
+  object-fit:contain;
+}
+.universe-detail-art .universe-detail-placeholder {z-index:0;}
+.universe-art img[hidden],.universe-detail-art img[hidden]{display:none!important;}

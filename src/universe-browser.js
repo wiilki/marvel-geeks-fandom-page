@@ -104,9 +104,10 @@ function card(item) {
     (item.year || "Date TBA") + (item.phase ? " · Phase " + item.phase : "") :
     item.kind==="screen" ? (item.actor || item.subtitle) :
     (item.subtitle || "Marvel Comics");
-  const thumb=item.image ?
-    '<img src="'+escapeHtml(item.image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">' :
-    '<span class="universe-art-mark" aria-hidden="true">'+escapeHtml(item.title.slice(0,2).toUpperCase())+'</span>';
+  const thumb='<span class="universe-art-mark" aria-hidden="true">'+
+    escapeHtml(item.title.slice(0,2).toUpperCase())+'</span>' +
+    (item.image ? '<img src="'+escapeHtml(item.image)+
+      '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">' : "");
   return '<article class="universe-card"><button type="button" class="universe-open" data-u-open="'+escapeHtml(item.key)+
     '" aria-label="View '+escapeHtml(item.title)+' details"><div class="universe-art">'+thumb+
     '<span class="universe-art-label">'+(item.kind==="movies"?"FILM":item.kind==="screen"?"ON SCREEN":"COMICS")+
@@ -239,9 +240,11 @@ function statsMarkup(item) {
 function showDetail(item) {
   detailBody.dataset.universeKey=item.key;
   const kindTitle=modeName(item.kind);
-  const picture=item.image ?
-    '<img src="'+escapeHtml(item.image)+'" alt="" referrerpolicy="no-referrer">' :
-    '<span class="universe-detail-placeholder">'+escapeHtml(item.title.slice(0,2).toUpperCase())+'</span>';
+  const picture='<span class="universe-detail-placeholder" aria-hidden="true">'+
+    escapeHtml(item.title.slice(0,2).toUpperCase())+'</span>' +
+    (item.image ? '<img src="'+escapeHtml(item.image)+'" alt="'+
+      escapeHtml((item.kind==="movies" ? "Poster for " : "Portrait of ") + item.title)+
+      '" decoding="async" referrerpolicy="no-referrer">' : "");
   const facts=item.kind==="movies" ?
     fact("Release",item.date || item.year || "Unannounced")+
     fact("Director",item.director)+fact("Runtime",item.runtime ? item.runtime+" minutes":null)+

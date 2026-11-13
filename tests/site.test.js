@@ -47,3 +47,15 @@ test("movie and character explorer is wired and external endpoints are limited",
   assert.ok(html.includes("Superhero API"));
   assert.ok(html.includes("MCUAPI"));
 });
+
+test("curated and expanded character images have safe fallbacks",()=>{
+  const photos=readFileSync(new URL("../src/character-images.js",import.meta.url),"utf8");
+  const expanded=readFileSync(new URL("../src/universe-browser.js",import.meta.url),"utf8");
+  assert.ok(app.includes('import { portraitUrlsForCharacter }'));
+  assert.ok(app.includes('data-image-fallback'));
+  assert.ok(app.includes('image.closest(".cover-art--has-photo")'));
+  assert.ok(app.includes('document.addEventListener("error"'));
+  assert.ok(css.includes('.cover-art--has-photo .cover-photo'));
+  assert.ok(photos.includes('safeImageUrl'));
+  assert.ok(expanded.includes('universe-detail-placeholder'));
+});

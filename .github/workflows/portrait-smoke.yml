@@ -1,0 +1,21 @@
+name: Character portrait image availability
+
+on:
+  pull_request:
+    paths:
+      - 'src/character-images.js'
+      - 'tests/portrait-smoke.py'
+      - '.github/workflows/portrait-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Sample comic and MCU portrait hosts
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tests/portrait-smoke.py

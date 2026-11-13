@@ -20,6 +20,28 @@ A complete, no-build rewrite of the original Marvel Geeks project. Explore a cur
 
 
 
+
+### Character portraits
+
+The original 24 curated character cards (including the Featured Heroes row and full
+detail panels) now display source-verified public character portraits, instead of
+only the CSS initials graphics. Portrait URLs are mapped deliberately by character
+identity, using Marvel Comics character images from [Superhero API](https://github.com/akabab/superhero-api)
+and MCU screen portraits from [MCUAPI](https://github.com/AugustoMarcelo/mcuapi).
+For example, the Wasp in the original catalog is Hope van Dyne (not the comics'
+Janet van Dyne), Ant-Man is Scott Lang and Captain Marvel is Carol Danvers.
+Those use exact matching screen portrayals. The expanded movie and character
+archive uses the same providers' own supplied image URLs.
+
+Images are hotlinked from the providers' existing CDNs; **no copyrighted Marvel
+pictures are checked into the repository**, nor is license to their artwork
+implied by the API code's MIT license. External image hosts may block hotlinking
+or remove images. On an image error, the app tries a second vetted source (when
+available) and then restores its original graphic/initials fallback, instead of
+showing a broken-image icon. GitHub Pages remains free and no API keys are needed.
+The static mapping in src/character-images.js is source-verified and can be
+extended when more curated heroes are added.
+
 ## Expanded movie and character APIs (2026)
 
 **MCUAPI** — https://github.com/AugustoMarcelo/mcuapi — keyless REST metadata about Marvel cinematic titles and their on-screen characters.
