@@ -33,6 +33,41 @@ quotes from external articles. Any metadata supplied by independent
 fan-run APIs can differ from canon or change over time. Marvel/Disney artwork
 and intellectual property remain the property of their owners.
 
+## Official character voice previews (no audio copying)
+
+For 10 original character dossiers, Marvel Geeks offers an **opt-in playable
+official Marvel Entertainment YouTube scene** featuring the character.
+This preserves the actual performance and spoken dialogue rather than
+imitating any actor's voice. Each matching character card has an
+"OFFICIAL VIDEO VOICE PREVIEW" label. The dossier explains the scene and
+has a button to load the **visible** YouTube player.
+
+The site never automatically plays sound on card open; clicking **Play official
+video clip** loads YouTube's unmodified audiovisual player in the open dossier
+and requests playback. Some devices may still require clicking the YouTube
+play button. Navigating to another dossier or closing the dialog destroys the
+embedded player and stops any current playback. An official Watch on YouTube
+link is supplied in case embedding is blocked by region, browser, or uploader.
+
+Supported characters at this stage: Spider-Man, Iron Man, Captain America,
+Thor, Star-Lord, Doctor Strange, Scarlet Witch, Ant-Man, Daredevil and Shang-Chi.
+Some previews feature multiple characters, so the feature identifies the
+exact official video rather than claiming an isolated line. Other characters
+have no clip button until an exact appropriate official source is verified.
+
+**Rights:** Marvel/Disney and any relevant performers retain rights to the
+recordings. Linking or embedding an official video within YouTube's player
+is *not* a license to download, strip audio, edit it, host MP3 files,
+or play a hidden/background player. We have not located a blanket free
+license to use actual film/game character dialogue as separate audio.
+For direct hosting, request permission through
+[Disney Studios Licensing](https://www.disneystudiolicensing.com/) (Marvel
+requests: permissions@marvel.com). YouTube's developer policies prohibit
+separating audio and video or hiding the player:
+https://developers.google.com/youtube/terms/developer-policies.
+No API key or paid service is required for the optional embedded previews.
+Video availability and permission to embed can change.
+
 ## What it does
 
 - Search a built-in editorial collection of 24 characters, 24 comics and 18 movies; works without API keys or an internet connection (after loading the site).
@@ -43,6 +78,7 @@ and intellectual property remain the property of their owners.
 - **Browse thousands of Marvel comic issues through the independent [Marvel Metadata API](https://github.com/emreparker/marvel-comics)**. Browse paginated issues, search comic titles, inspect full issue metadata including creator credits and optional cover, navigate related series/creator issues and open the official Marvel comic page.
 - Save remote comic issues as local bookmarks. Remote bookmarks are separate from the built-in editorial archive favorites.
 - Browse MCU movies, screen portrayals and Marvel Comics superhero profiles through two additional no-key public APIs.
+- Optional **official Marvel YouTube character performance previews** with explicit playback, no audio extraction, and automatic stop on dossier close.
 - Mobile-first design, keyboard shortcuts, reduced-motion support and semantic, accessible dialogs.
 
 **Important distinction from the 2022–2024 version:** The old site called the official Marvel and RapidAPI movie APIs from the browser, using private keys in client-side variables. That cannot be done securely on public static hosting: build-time frontend "secrets" are still visible to visitors. This rebuild replaces those unstable/dependent lookups with a working, curated collection and separate Wikipedia reading results. It does not claim to be a complete or live official Marvel catalog. An official live Marvel/IMDb integration would require a separate server-side proxy and API arrangements. The new third-party comics API covers comics metadata, not movies or all characters.

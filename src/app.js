@@ -5,6 +5,8 @@ import { portraitUrlsForCharacter } from "./character-images.js";
 import { storyImageUrls } from "./story-images.js";
 import { cardHighlights } from "./dossier-data.js";
 import { buildCuratedDossier,enrichCuratedDossier } from "./dossier-view.js";
+import {getCharacterVoicePreview} from "./character-voice-clips.js";
+import {playOfficialVoiceVideo,stopOfficialVoiceVideo} from "./official-voice-player.js";
 
 const $ = selector => document.querySelector(selector);
 const storageKey = "marvel-geeks-favorites-v2";
@@ -114,6 +116,7 @@ function itemCard(item,compact=false) {
   const kind={characters:"Character",comics:"Comic",movies:"Film"}[item.type];
   const meta=item.type==="characters" ? item.team : item.year+" · "+kind;
   const highlights=cardHighlights(item).slice(0,compact?1:2);
+  const hasVoice=item.type==="characters" && Boolean(getCharacterVoicePreview(item.id));
   const quickfacts='<span class="card-quickfacts">'+highlights.map(text=>
     '<span class="card-quickfact">'+escapeHtml(text)+'</span>').join("")+'</span>';
   return '<article class="archive-card'+(compact?' archive-card--compact':'')+'">'+
@@ -121,6 +124,7 @@ function itemCard(item,compact=false) {
     art(item)+'<span class="card-body"><span class="eyebrow card-type">'+escapeHtml(kind)+
     ' <span class="tiny-dot"></span> '+escapeHtml(meta)+'</span><strong class="card-title">'+escapeHtml(item.title)+'</strong>'+
     '<span class="card-summary">'+escapeHtml(item.summary)+'</span>'+quickfacts+
+    (hasVoice?'<span class="card-voice-marker">▶ OFFICIAL VIDEO VOICE PREVIEW</span>':"")+
     '<span class="card-explore">OPEN FULL DOSSIER '+icon("arrow")+'</span></span></button>'+
     '<button class="save-button'+(saved?' is-saved':'')+'" data-favorite="'+escapeHtml(key)+
     '" aria-pressed="'+saved+'" aria-label="'+(saved?"Remove ":"Save ")+escapeHtml(item.title)+(saved?" from":" to")+
@@ -270,6 +274,10 @@ document.addEventListener("error",event => {
 document.addEventListener("click",event => {
   const target = event.target.closest("button");
   if (!target) return;
+  if (target.hasAttribute("data-voice-preview")) {
+    playOfficialVoiceVideo($("#detailBody"),target.dataset.voicePreview);
+    return;
+  }
   if (target.dataset.open) { openDetail(target.dataset.open); return; }
   if (target.hasAttribute("data-dossier-back")) { backToDossier(); return; }
   if (target.dataset.favorite) { toggleFavorite(target.dataset.favorite); return; }
@@ -302,7 +310,7 @@ $("#sortSelect").addEventListener("change",event => { state.sort = event.target.
 $("#detailDialog").addEventListener("click",event => {
   if (event.target === $("#detailDialog")) closeDetail();
 });
-$("#detailDialog").addEventListener("close",() => { dossierHistory.length=0;delete $("#detailBody").dataset.curatedKey;lastFocused?.focus?.();lastFocused=null; });
+$("#detailDialog").addEventListener("close",() => { stopOfficialVoiceVideo($("#detailBody"));dossierHistory.length=0;delete $("#detailBody").dataset.curatedKey;lastFocused?.focus?.();lastFocused=null; });
 document.addEventListener("keydown",event => {
   if (event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey &&
       !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "") && !$("#detailDialog").open) {
