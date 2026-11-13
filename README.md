@@ -33,40 +33,40 @@ quotes from external articles. Any metadata supplied by independent
 fan-run APIs can differ from canon or change over time. Marvel/Disney artwork
 and intellectual property remain the property of their owners.
 
-## Official character voice previews (no audio copying)
+## Official character video previews (simplified autoplay)
 
-For 10 original character dossiers, Marvel Geeks offers an **opt-in playable
-official Marvel Entertainment YouTube scene** featuring the character.
-This preserves the actual performance and spoken dialogue rather than
-imitating any actor's voice. Each matching character card has an
-"OFFICIAL VIDEO VOICE PREVIEW" label. The dossier explains the scene and
-has a button to load the **visible** YouTube player.
+For the ten characters with a curated official Marvel Entertainment scene,
+the **character archive card is visibly labelled “OPEN & PLAY SCENE” and
+“VIDEO PLAYS ON OPEN.”** Selecting that clearly marked card directly opens
+its dossier and requests playback of the **full, visible YouTube video**.
+Nothing is extracted or disguised as an audio-only stream. YouTube’s ordinary
+player retains its own title, channel branding, ads and playback controls.
+The page no longer repeats the full scene title, explanation, audio/licensing
+disclaimer or a second heading above the video. A small **Watch on YouTube**
+link remains in case an embedded scene cannot play.
 
-The site never automatically plays sound on card open; clicking **Play official
-video clip** loads YouTube's unmodified audiovisual player in the open dossier
-and requests playback. Some devices may still require clicking the YouTube
-play button. Navigating to another dossier or closing the dialog destroys the
-embedded player and stops any current playback. An official Watch on YouTube
-link is supplied in case embedding is blocked by region, browser, or uploader.
+Playback with sound **is not guaranteed**: Safari, Chrome and mobile browsers
+may block unmuted autoplay despite the explicit user click; the viewer can
+press Play in the YouTube player if necessary. Opening a character through
+a secondary *related story* link, the random-selection control or the
+Back-to-Previous control does **not** infer consent to autoplay; those
+routes retain the small explicit Play control instead. Other characters
+still do not show a scene until the correct official source can be verified.
+Navigating away or closing the dossier destroys the player and stops sound.
+Saving an entry while a scene is playing does not recreate or restart it.
 
-Supported characters at this stage: Spider-Man, Iron Man, Captain America,
-Thor, Star-Lord, Doctor Strange, Scarlet Witch, Ant-Man, Daredevil and Shang-Chi.
-Some previews feature multiple characters, so the feature identifies the
-exact official video rather than claiming an isolated line. Other characters
-have no clip button until an exact appropriate official source is verified.
+The character portrait is now fixed to a bounded, top-aligned frame rather
+than stretching to match the full height of a long dossier and centering
+the photograph halfway down the left column. On mobile it becomes a
+short image panel above the written content.
 
-**Rights:** Marvel/Disney and any relevant performers retain rights to the
-recordings. Linking or embedding an official video within YouTube's player
-is *not* a license to download, strip audio, edit it, host MP3 files,
-or play a hidden/background player. We have not located a blanket free
-license to use actual film/game character dialogue as separate audio.
-For direct hosting, request permission through
-[Disney Studios Licensing](https://www.disneystudiolicensing.com/) (Marvel
-requests: permissions@marvel.com). YouTube's developer policies prohibit
-separating audio and video or hiding the player:
+Marvel/Disney and the performers retain all rights. An allowed YouTube embed
+does not grant a license to download, isolate, rehost or alter voice audio.
+YouTube's developer policies prohibit separating audio/video or hiding
+the playback interface:
 https://developers.google.com/youtube/terms/developer-policies.
-No API key or paid service is required for the optional embedded previews.
-Video availability and permission to embed can change.
+Embedding official videos remains free and requires no API key. Video
+availability and embedding permissions can change.
 
 ## What it does
 

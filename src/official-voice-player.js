@@ -1,6 +1,7 @@
 /**
  * Plays only the official, unmodified video in YouTube's visible player.
- * Playback is initiated by a visitor action; no background/audio-only player.
+ * Playback begins on an explicitly labelled Open & Play character card click,
+ * or the in-dossier Play button. Never start a hidden/background/audio-only player.
  */
 import {getCharacterVoicePreview,officialEmbedUrl} from "./character-voice-clips.js";
 

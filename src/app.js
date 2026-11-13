@@ -120,12 +120,16 @@ function itemCard(item,compact=false) {
   const quickfacts='<span class="card-quickfacts">'+highlights.map(text=>
     '<span class="card-quickfact">'+escapeHtml(text)+'</span>').join("")+'</span>';
   return '<article class="archive-card'+(compact?' archive-card--compact':'')+'">'+
-    '<button class="card-open" type="button" data-open="'+escapeHtml(key)+'" aria-label="Explore the '+escapeHtml(kind.toLowerCase())+' dossier for '+escapeHtml(item.title)+'">'+
+    '<button class="card-open" type="button" data-open="'+escapeHtml(key)+'"'+
+    (hasVoice?' data-autoplay-scene="true"':'')+
+    ' aria-label="'+escapeHtml(hasVoice?
+      'Open '+item.title+' dossier and play an official Marvel video' :
+      'Explore the '+kind.toLowerCase()+' dossier for '+item.title)+'">'+
     art(item)+'<span class="card-body"><span class="eyebrow card-type">'+escapeHtml(kind)+
     ' <span class="tiny-dot"></span> '+escapeHtml(meta)+'</span><strong class="card-title">'+escapeHtml(item.title)+'</strong>'+
     '<span class="card-summary">'+escapeHtml(item.summary)+'</span>'+quickfacts+
-    (hasVoice?'<span class="card-voice-marker">▶ OFFICIAL VIDEO VOICE PREVIEW</span>':"")+
-    '<span class="card-explore">OPEN FULL DOSSIER '+icon("arrow")+'</span></span></button>'+
+    (hasVoice?'<span class="card-voice-marker">▶ VIDEO PLAYS ON OPEN</span>':"")+
+    '<span class="card-explore">'+(hasVoice?'OPEN & PLAY SCENE':'OPEN FULL DOSSIER')+' '+icon("arrow")+'</span></span></button>'+
     '<button class="save-button'+(saved?' is-saved':'')+'" data-favorite="'+escapeHtml(key)+
     '" aria-pressed="'+saved+'" aria-label="'+(saved?"Remove ":"Save ")+escapeHtml(item.title)+(saved?" from":" to")+
     ' favorites" title="'+(saved?"Remove from":"Add to")+' favorites">'+icon("heart")+'</button></article>';
@@ -171,7 +175,7 @@ function render() {
   syncComicsBrowser({query:state.query,type:state.type,savedOnly:state.savedOnly});
   syncUniverseBrowser({query:state.query,type:state.type,savedOnly:state.savedOnly});
 }
-function openDetail(key,{fromHistory=false,refresh=false}={}) {
+function openDetail(key,{fromHistory=false,refresh=false,autoPlayScene=false}={}) {
   const item=byKey.get(key);
   if (!item)return;
   const detailBody=$("#detailBody");
@@ -192,6 +196,9 @@ function openDetail(key,{fromHistory=false,refresh=false}={}) {
   if (back)back.hidden=!dossierHistory.length;
   if (!dialog.open) {lastFocused=document.activeElement;dialog.showModal();}
   dialog.scrollTop=0;
+  // A clearly labelled "Open & Play" character card initiates this request
+  // during its user click. Playback with sound remains browser-dependent.
+  if (autoPlayScene && item.type==="characters") playOfficialVoiceVideo(detailBody,item.id);
   // The offline editorial narrative is already shown. Network enhancement is optional.
   void enrichCuratedDossier(item,{detailBody});
 }
@@ -206,7 +213,11 @@ function toggleFavorite(key) {
   if (state.favorites.has(key)) state.favorites.delete(key); else state.favorites.add(key);
   persistFavorites();
   render();
-  if ($("#detailDialog").open && $("#detailBody").dataset.curatedKey === key) openDetail(key,{refresh:true});
+  // Saving a favorite must not tear down an active official video player.
+  if ($("#detailDialog").open && $("#detailBody").dataset.curatedKey === key) {
+    const button=$("#detailBody [data-favorite]");
+    if (button)button.textContent=state.favorites.has(key)?"♥ Saved to favorites":"♡ Save to favorites";
+  }
 }
 function keyForModal() {
   const button = $("#detailBody [data-favorite]");
@@ -278,7 +289,7 @@ document.addEventListener("click",event => {
     playOfficialVoiceVideo($("#detailBody"),target.dataset.voicePreview);
     return;
   }
-  if (target.dataset.open) { openDetail(target.dataset.open); return; }
+  if (target.dataset.open) { openDetail(target.dataset.open,{autoPlayScene:target.dataset.autoplayScene==="true"}); return; }
   if (target.hasAttribute("data-dossier-back")) { backToDossier(); return; }
   if (target.dataset.favorite) { toggleFavorite(target.dataset.favorite); return; }
   if (target.dataset.type) { setType(target.dataset.type); return; }
