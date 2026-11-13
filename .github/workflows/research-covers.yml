@@ -1,17 +1,17 @@
-name: Probe comic cover title variants
+name: Verify missing editorial comic covers
 on:
   pull_request:
     paths:
-      - 'scripts/probe_cover_titles.py'
+      - 'scripts/research_remaining_covers.py'
       - '.github/workflows/research-covers.yml'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  probe:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
-      - name: Query historical comic issue title variants
-        run: python3 -u scripts/probe_cover_titles.py
+      - name: Verify missing comic issue identities and fetch covers
+        run: python3 -u scripts/research_remaining_covers.py
