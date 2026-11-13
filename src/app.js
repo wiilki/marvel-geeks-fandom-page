@@ -3,6 +3,8 @@ import { syncComicsBrowser } from "./live-comics.js";
 import { syncUniverseBrowser } from "./universe-browser.js";
 import { portraitUrlsForCharacter } from "./character-images.js";
 import { storyImageUrls } from "./story-images.js";
+import { cardHighlights } from "./dossier-data.js";
+import { buildCuratedDossier,enrichCuratedDossier } from "./dossier-view.js";
 
 const $ = selector => document.querySelector(selector);
 const storageKey = "marvel-geeks-favorites-v2";
@@ -21,6 +23,8 @@ let lastFocused = null;
 let lookupTimer = null;
 let lookupAbort = null;
 let lookupSerial = 0;
+let externalRequestedQuery = "";
+const dossierHistory = [];
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char =>
@@ -105,18 +109,22 @@ function icon(kind) {
   };
   return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + paths[kind] + '</svg>';
 }
-function itemCard(item, compact=false) {
-  const key = keyFor(item), saved = state.favorites.has(key);
-  const kind = {characters:"Character",comics:"Comic",movies:"Film"}[item.type];
-  const meta = item.type === "characters" ? item.team : item.type === "movies" ? item.year + " · Film" : item.year + " · Comic";
-  return '<article class="archive-card' + (compact ? ' archive-card--compact' : '') + '">' +
-    '<button class="card-open" data-open="' + escapeHtml(key) + '" aria-label="Explore ' + escapeHtml(item.title) + '">' +
-    art(item) + '<span class="card-body"><span class="eyebrow card-type">' + escapeHtml(kind) + ' <span class="tiny-dot"></span> ' +
-    escapeHtml(meta) + '</span><strong class="card-title">' + escapeHtml(item.title) + '</strong>' +
-    '<span class="card-summary">' + escapeHtml(item.summary) + '</span><span class="card-explore">Explore dossier ' + icon("arrow") + '</span></span></button>' +
-    '<button class="save-button' + (saved ? ' is-saved' : '') + '" data-favorite="' + escapeHtml(key) +
-    '" aria-pressed="' + saved + '" aria-label="' + (saved ? "Remove " : "Save ") + escapeHtml(item.title) + (saved ? " from" : " to") +
-    ' favorites" title="' + (saved ? "Remove from" : "Add to") + ' favorites">' + icon("heart") + '</button></article>';
+function itemCard(item,compact=false) {
+  const key=keyFor(item),saved=state.favorites.has(key);
+  const kind={characters:"Character",comics:"Comic",movies:"Film"}[item.type];
+  const meta=item.type==="characters" ? item.team : item.year+" · "+kind;
+  const highlights=cardHighlights(item).slice(0,compact?1:2);
+  const quickfacts='<span class="card-quickfacts">'+highlights.map(text=>
+    '<span class="card-quickfact">'+escapeHtml(text)+'</span>').join("")+'</span>';
+  return '<article class="archive-card'+(compact?' archive-card--compact':'')+'">'+
+    '<button class="card-open" type="button" data-open="'+escapeHtml(key)+'" aria-label="Explore the '+escapeHtml(kind.toLowerCase())+' dossier for '+escapeHtml(item.title)+'">'+
+    art(item)+'<span class="card-body"><span class="eyebrow card-type">'+escapeHtml(kind)+
+    ' <span class="tiny-dot"></span> '+escapeHtml(meta)+'</span><strong class="card-title">'+escapeHtml(item.title)+'</strong>'+
+    '<span class="card-summary">'+escapeHtml(item.summary)+'</span>'+quickfacts+
+    '<span class="card-explore">OPEN FULL DOSSIER '+icon("arrow")+'</span></span></button>'+
+    '<button class="save-button'+(saved?' is-saved':'')+'" data-favorite="'+escapeHtml(key)+
+    '" aria-pressed="'+saved+'" aria-label="'+(saved?"Remove ":"Save ")+escapeHtml(item.title)+(saved?" from":" to")+
+    ' favorites" title="'+(saved?"Remove from":"Add to")+' favorites">'+icon("heart")+'</button></article>';
 }
 function renderFeatured() {
   $("#featuredGrid").innerHTML = featuredIds.map(id => characters.find(item => item.id === id)).filter(Boolean)
@@ -159,43 +167,34 @@ function render() {
   syncComicsBrowser({query:state.query,type:state.type,savedOnly:state.savedOnly});
   syncUniverseBrowser({query:state.query,type:state.type,savedOnly:state.savedOnly});
 }
-function typeLabel(type) { return ({characters:"CHARACTER FILE",comics:"COMIC FILE",movies:"FILM FILE"})[type] || "FILE"; }
-function linkedItem(item) {
-  return '<button class="related-link" data-open="' + escapeHtml(keyFor(item)) + '">' +
-    '<span>' + escapeHtml(item.title) + '</span>' + icon("arrow") + '</button>';
-}
-function openDetail(key) {
-  const item = byKey.get(key);
-  if (!item) return;
-  const saved = state.favorites.has(key);
-  let facts = [];
-  let relatedCharacters = [];
-  let relatedStories = [];
-  if (item.type === "characters") {
-    facts = [["Identity",item.alias],["Affiliation",item.team],["First appearance",item.first]];
-    relatedStories = [...comics,...movies].filter(i => i.cast.includes(item.id)).slice(0,12)
-      .map(i => byKey.get((i.year && "phase" in i ? "movies:" : "comics:") + i.id)).filter(Boolean);
-  } else {
-    facts = item.type === "movies" ? [["Released",item.year],["Collection",item.phase],["Directed by",item.director]] :
-      [["Published",item.year],["Era",item.era]];
-    relatedCharacters = (item.cast || []).map(id => byKey.get("characters:" + id)).filter(Boolean);
+function openDetail(key,{fromHistory=false,refresh=false}={}) {
+  const item=byKey.get(key);
+  if (!item)return;
+  const detailBody=$("#detailBody");
+  const dialog=$("#detailDialog");
+  const previous=detailBody.dataset.curatedKey;
+  if (!refresh) {
+    if (!fromHistory && dialog.open && previous && previous!==key) {
+      dossierHistory.push(previous);
+      if (dossierHistory.length>30)dossierHistory.shift();
+    } else if (!dialog.open) dossierHistory.length=0;
   }
-  const abilities = item.powers?.length ? '<div class="detail-section"><h3>Abilities & traits</h3><div class="detail-tags">' +
-    item.powers.map(p => '<span>' + escapeHtml(p) + '</span>').join("") + '</div></div>' : "";
-  const related = (relatedCharacters.length || relatedStories.length) ? '<div class="detail-section"><h3>' +
-    (relatedStories.length ? "Connected comics & films" : "Featured characters") + '</h3><div class="related-list">' +
-    (relatedStories.length ? relatedStories : relatedCharacters).map(linkedItem).join("") + '</div></div>' : "";
-  const wikiSearch = 'https://en.wikipedia.org/w/index.php?search=' + encodeURIComponent(item.title + " Marvel");
-  $("#detailBody").innerHTML = '<div class="detail-layout">' +
-    art(item,"cover-art--detail") + '<div class="detail-copy"><span class="eyebrow">MARVEL GEEKS / ' + typeLabel(item.type) + '</span>' +
-    '<h2 id="detailTitle">' + escapeHtml(item.title) + '</h2><p class="detail-lede">' + escapeHtml(item.summary) + '</p>' +
-    '<dl class="fact-grid">' + facts.map(([name,value]) => '<div><dt>' + escapeHtml(name) + '</dt><dd>' + escapeHtml(value) + '</dd></div>').join("") +
-    '</dl>' + abilities + related +
-    '<div class="detail-actions"><button class="button button--primary" data-favorite="' + escapeHtml(key) + '">' +
-    (saved ? "♥ Saved to favorites" : "♡ Save to favorites") + '</button><a class="button button--outline" href="' +
-    wikiSearch + '" target="_blank" rel="noopener noreferrer">Read more ↗</a></div></div></div>';
-  const dialog = $("#detailDialog");
-  if (!dialog.open) { lastFocused = document.activeElement; dialog.showModal(); }
+  // Mark the active entry *before* starting asynchronous metadata updates.
+  detailBody.dataset.curatedKey=key;
+  detailBody.innerHTML=buildCuratedDossier(item,{
+    saved:state.favorites.has(key),art
+  });
+  const back=detailBody.querySelector("[data-dossier-back]");
+  if (back)back.hidden=!dossierHistory.length;
+  if (!dialog.open) {lastFocused=document.activeElement;dialog.showModal();}
+  dialog.scrollTop=0;
+  // The offline editorial narrative is already shown. Network enhancement is optional.
+  void enrichCuratedDossier(item,{detailBody});
+}
+function backToDossier() {
+  if (!dossierHistory.length)return;
+  const key=dossierHistory.pop();
+  openDetail(key,{fromHistory:true});
 }
 function closeDetail() { const dialog = $("#detailDialog"); if (dialog.open) dialog.close(); }
 function toggleFavorite(key) {
@@ -203,7 +202,7 @@ function toggleFavorite(key) {
   if (state.favorites.has(key)) state.favorites.delete(key); else state.favorites.add(key);
   persistFavorites();
   render();
-  if ($("#detailDialog").open) openDetail(keyForModal());
+  if ($("#detailDialog").open && $("#detailBody").dataset.curatedKey === key) openDetail(key,{refresh:true});
 }
 function keyForModal() {
   const button = $("#detailBody [data-favorite]");
@@ -221,7 +220,8 @@ function scheduleLiveLookup() {
   const serial = ++lookupSerial;
   const term = state.query.trim();
   const box = $("#liveSection");
-  if (term.length < 3) { box.hidden = true; return; }
+  $("#externalResearchSection").hidden = term.length < 3;
+  if (term.length < 3 || externalRequestedQuery !== term) { box.hidden = true; return; }
   box.hidden = false;
   $("#liveStatus").textContent = "Checking Wikipedia for additional reading…";
   $("#liveResults").innerHTML = "";
@@ -271,11 +271,13 @@ document.addEventListener("click",event => {
   const target = event.target.closest("button");
   if (!target) return;
   if (target.dataset.open) { openDetail(target.dataset.open); return; }
+  if (target.hasAttribute("data-dossier-back")) { backToDossier(); return; }
   if (target.dataset.favorite) { toggleFavorite(target.dataset.favorite); return; }
   if (target.dataset.type) { setType(target.dataset.type); return; }
   if (target.hasAttribute("data-facet")) { state.facet = target.dataset.facet; render(); return; }
   const action = target.dataset.action;
   if (action === "focus-search") { $("#searchInput").focus(); $("#discover").scrollIntoView({behavior:"smooth"}); }
+  if (action === "lookup-external") { externalRequestedQuery = state.query.trim(); scheduleLiveLookup(); $("#liveSection").scrollIntoView({behavior:"smooth",block:"nearest"}); }
   if (action === "random") {
     const items = currentItems().length ? currentItems() : allItems;
     openDetail(keyFor(items[Math.floor(Math.random()*items.length)]));
@@ -300,7 +302,7 @@ $("#sortSelect").addEventListener("change",event => { state.sort = event.target.
 $("#detailDialog").addEventListener("click",event => {
   if (event.target === $("#detailDialog")) closeDetail();
 });
-$("#detailDialog").addEventListener("close",() => { lastFocused?.focus?.(); lastFocused = null; });
+$("#detailDialog").addEventListener("close",() => { dossierHistory.length=0;delete $("#detailBody").dataset.curatedKey;lastFocused?.focus?.();lastFocused=null; });
 document.addEventListener("keydown",event => {
   if (event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey &&
       !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "") && !$("#detailDialog").open) {

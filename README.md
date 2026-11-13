@@ -4,13 +4,42 @@ A complete, no-build rewrite of the original Marvel Geeks project. Explore a cur
 
 **Live site (after GitHub Pages is enabled):** https://wiilki.github.io/marvel-geeks-fandom-page/
 
+
+## In-site dossier experience (November 2026)
+
+The original 66 items now display more than a poster and short tagline.
+Each card shows two additional metadata snippets (identity/first appearance,
+film director/featured characters, or comic era/featured characters).
+Opening a card presents an extended, **original editorial overview** for
+each of the 24 heroes, 24 comics and 18 films; detailed fact grids, abilities,
+grouped links to related characters, comics and movies, and navigation back
+to the previous entry. This information works even if the APIs are offline.
+
+For the 18 films, the verified MCUAPI ID matches a supplementary synopsis,
+runtime, saga, release date and IMDb reference where supplied by the source.
+For the 24 comics, the verified Marvel Metadata API issue ID retrieves
+additional issue information and creator credits if available.
+All of these are fetched **only when a dossier is opened**; errors are
+contained to the supplementary area and never replace the local profile.
+Film facts and comic credits are clearly marked as third-party metadata.
+
+Wikipedia is no longer fetched just because a user types a search query.
+External research is an explicit optional button, and the corresponding
+encyclopedia link in each dossier is tucked under a collapsible
+"External reference (optional)" heading.
+
+Source notes: the editorial descriptions are original summaries rather than
+quotes from external articles. Any metadata supplied by independent
+fan-run APIs can differ from canon or change over time. Marvel/Disney artwork
+and intellectual property remain the property of their owners.
+
 ## What it does
 
 - Search a built-in editorial collection of 24 characters, 24 comics and 18 movies; works without API keys or an internet connection (after loading the site).
 - Switch between content types, filter by character team/comic era/film phase and sort results.
-- Open detailed character, comic and film panels; navigate through related characters and stories.
+- Open rich, self-contained character, comic and film dossiers with original background writing, first appearances, cast/directors, abilities, and in-site navigation between related stories. Use the back-to-previous button to explore without leaving the page. Movie runtime, release/saga facts, and comic creator credits load on demand from the free third-party APIs, with the original details always visible if an API fails.
 - Save favorites locally on your browser (no account), view your saved list and share search links.
-- Search additional Wikipedia references when connected to the internet (clearly labeled as external search results).
+- Search Wikipedia references **only on request**; the main character/movie/comic cards and dossiers offer substantive on-site information first.
 - **Browse thousands of Marvel comic issues through the independent [Marvel Metadata API](https://github.com/emreparker/marvel-comics)**. Browse paginated issues, search comic titles, inspect full issue metadata including creator credits and optional cover, navigate related series/creator issues and open the official Marvel comic page.
 - Save remote comic issues as local bookmarks. Remote bookmarks are separate from the built-in editorial archive favorites.
 - Browse MCU movies, screen portrayals and Marvel Comics superhero profiles through two additional no-key public APIs.
