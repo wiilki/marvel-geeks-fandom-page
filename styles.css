@@ -294,3 +294,74 @@ svg { width:1.1em;height:1.1em; flex-shrink:0; }
 @media(max-width:800px){
   .cover-art--detail.cover-art--poster {height:330px;min-height:330px;}
 }
+
+
+/* Rich self-contained story cards: useful facts before entering a dossier. */
+.archive-card .card-body {min-height:247px;gap:0;}
+.archive-card .card-summary {-webkit-line-clamp:3;min-height:53px;}
+.card-quickfacts {display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin-top:12px;min-height:46px;}
+.card-quickfact {display:block;max-width:100%;font-size:11px;color:#c3ccda;line-height:1.4;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.card-quickfact::before {content:"◆";font-size:7px;color:#e8b679;margin-right:7px;vertical-align:2px;}
+.archive-card .card-explore {margin-top:auto;padding-top:15px;font-size:10px;letter-spacing:.06em;}
+.archive-card--compact .card-body {min-height:155px;gap:0;}
+.archive-card--compact .card-summary {display:none;}
+.archive-card--compact .card-quickfacts {margin-top:7px;min-height:20px;}
+.archive-card--compact .card-quickfact {font-size:10px;color:#bbc4d1;}
+.archive-card--compact .card-explore {padding-top:10px;}
+/* Full on-site profiles before any optional encyclopedia link. */
+.dossier-copy .dossier-nav {display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:7px;}
+.dossier-back {font-size:11px;font-weight:850;letter-spacing:.06em;color:#fff;border:1px solid #6a7588;background:#25354a;border-radius:8px;padding:9px 11px;}
+.dossier-back:hover {background:#344866;border-color:#f2bc77;}
+.dossier-subtitle {font-size:13px;color:#f0bf86;letter-spacing:.025em;font-weight:700;margin:-6px 0 15px;}
+.dossier-story {background:linear-gradient(145deg,#253347,#1b2536);border:1px solid #46566a;border-radius:12px;padding:21px 22px;margin:0 0 24px;}
+.dossier-story h3 {margin:0 0 9px;font-size:11px;letter-spacing:.13em;color:#ffca8c;}
+.dossier-story p {font-size:14px;line-height:1.75;color:#e2e4eb;margin:0;}
+.dossier-facts {grid-template-columns:repeat(2,minmax(0,1fr));}
+.dossier-facts dd {line-height:1.45;}
+.dossier-related-section {border-top:1px solid #424d60;padding-top:20px;}
+.dossier-related-section .related-list {gap:8px;}
+.dossier-related-section .related-link {min-height:42px;}
+.dossier-related-section .related-link span:last-child {font-size:19px;color:#ecc188;}
+.dossier-metadata {border:1px solid #3b5261;border-radius:12px;background:#111c2b;padding:20px 21px;}
+.dossier-metadata [data-dossier-enrichment] {font-size:12px;line-height:1.7;color:#bfc7d1;}
+.dossier-metadata-source {font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:900;color:#8cdeb9;margin:0 0 13px;}
+.dossier-metadata-overview {font-size:13px;line-height:1.75;color:#e4e6eb;margin:0 0 17px;}
+.dossier-extra-facts {gap:13px;border-top:1px solid #3d4c5e;padding:15px 0;margin:0;}
+.dossier-extra-facts dd {font-size:12px;}
+.dossier-metadata a {color:#f7c48c;text-underline-offset:3px;}
+.dossier-credit-list {border-top:1px solid #3b4a5a;margin-top:14px;padding-top:12px;}
+.dossier-credit-list h4 {font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:#f2bd7f;margin:0 0 10px;}
+.dossier-credit-list ul {margin:0;padding-left:17px;columns:2;column-gap:20px;}
+.dossier-credit-list li {font-size:12px;margin-bottom:6px;break-inside:avoid;}
+.dossier-sources {border-top:1px dashed #4d596b;margin-top:25px;padding:15px 0;color:#aab7c6;}
+.dossier-sources summary {cursor:pointer;font-size:12px;font-weight:850;color:#bac3d3;}
+.dossier-sources summary:hover {color:#fff;}
+.dossier-sources p {font-size:12px;line-height:1.7;margin:10px 0;}
+.dossier-sources a {font-size:12px;color:#f5c08a;text-underline-offset:3px;}
+.external-research {margin-top:36px;padding:23px;border:1px solid #364255;border-radius:14px;background:#0d1420;}
+.external-research-head {display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;}
+.external-research h4 {font-size:19px;font-weight:900;letter-spacing:.02em;margin:7px 0;}
+.external-research p {font-size:12px;line-height:1.65;color:#aeb8c5;margin:0;max-width:640px;}
+.external-research .live-section {margin-top:20px;}
+@media(max-width:800px){
+ .archive-card .card-body {min-height:250px;}
+ .dossier-facts {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:550px){
+ .archive-card .card-body {padding:13px;min-height:258px;}
+ .archive-card .card-title {font-size:16px;}
+ .archive-card .card-summary {font-size:11px;-webkit-line-clamp:3;min-height:50px;}
+ .archive-card .card-quickfacts {min-height:50px;}
+ .card-quickfact {font-size:10px;}
+ .archive-card--compact .card-body {min-height:159px;padding:12px;}
+ .archive-card--compact .card-summary {display:none;}
+ .archive-card--compact .card-quickfacts {min-height:19px;}
+ .archive-card--compact .card-quickfact {font-size:10px;}
+ .dossier-copy {padding:22px;}
+ .dossier-story {padding:15px 16px;}
+ .dossier-story p {font-size:13px;}
+ .dossier-facts {grid-template-columns:1fr 1fr;gap:12px;}
+ .dossier-credit-list ul {columns:1;}
+ .dossier-metadata {padding:15px;}
+ .external-research {padding:16px;}
+}

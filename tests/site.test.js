@@ -59,3 +59,21 @@ test("curated and expanded character images have safe fallbacks",()=>{
   assert.ok(photos.includes('safeImageUrl'));
   assert.ok(expanded.includes('universe-detail-placeholder'));
 });
+
+test("rich in-site dossiers are present and Wikipedia search is optional",()=>{
+  const dossier=readFileSync(new URL("../src/dossier-view.js",import.meta.url),"utf8");
+  const data=readFileSync(new URL("../src/dossier-data.js",import.meta.url),"utf8");
+  assert.ok(existsSync(new URL("../tests/dossier.test.js",import.meta.url)));
+  assert.ok(html.includes('id="externalResearchSection"'));
+  assert.ok(html.includes('data-action="lookup-external"'));
+  assert.ok(app.includes('import { buildCuratedDossier,enrichCuratedDossier }'));
+  assert.ok(app.includes('card-quickfacts'));
+  assert.ok(app.includes('dossierHistory'));
+  assert.ok(dossier.includes('THE STORY SO FAR'));
+  assert.ok(dossier.includes('External reference (optional)'));
+  assert.ok(dossier.includes("loadUniverse"));
+  assert.ok(dossier.includes("fetchIssueDetail"));
+  assert.ok(data.includes("dossierConnections"));
+  assert.ok(css.includes(".dossier-story"));
+  assert.ok(css.includes(".card-quickfacts"));
+});
