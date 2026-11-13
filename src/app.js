@@ -2,6 +2,7 @@ import { allItems, byKey, characters, comics, movies, featuredIds, findCharacter
 import { syncComicsBrowser } from "./live-comics.js";
 import { syncUniverseBrowser } from "./universe-browser.js";
 import { portraitUrlsForCharacter } from "./character-images.js";
+import { storyImageUrls } from "./story-images.js";
 
 const $ = selector => document.querySelector(selector);
 const storageKey = "marvel-geeks-favorites-v2";
@@ -80,14 +81,18 @@ function art(item, size="") {
   const color = item.color || (item.type === "movies" ? "#d8a35c" : "#bd8bca");
   const tag = item.type === "characters" ? (item.mark || item.name.slice(0,2)) : item.type === "movies" ? "FILM" : "ISSUE";
   const label = item.type === "characters" ? item.name : (item.type === "movies" ? "MARVEL CINEMA" : "THE COMIC ARCHIVE");
-  const portraits = item.type === "characters" ? portraitUrlsForCharacter(item.id) : [];
-  const image = portraits.length ?
-    '<img class="cover-photo" src="' + escapeHtml(portraits[0]) +
-    '" alt="' + (size === "cover-art--detail" ? escapeHtml("Portrait of " + item.name) : "") +
+  const images = item.type === "characters" ? portraitUrlsForCharacter(item.id) : storyImageUrls(item);
+  const imageAlt = item.type === "characters" ? "Portrait of " + item.title :
+    item.type === "movies" ? "Movie poster for " + item.title : "Comic cover for " + item.title;
+  const image = images.length ?
+    '<img class="cover-photo" src="' + escapeHtml(images[0]) +
+    '" alt="' + (size === "cover-art--detail" ? escapeHtml(imageAlt) : "") +
     '" ' + (size === "cover-art--detail" ? 'fetchpriority="high"' : 'loading="lazy"') +
     ' decoding="async" referrerpolicy="no-referrer"' +
-    (portraits[1] ? ' data-image-fallback="' + escapeHtml(portraits[1]) + '"' : '') + '>' : "";
-  return '<div class="cover-art ' + escapeHtml(size) + (portraits.length ? ' cover-art--has-photo' : '') + '" style="--cover:' + escapeHtml(color) + '">' +
+    (images[1] ? ' data-image-fallback="' + escapeHtml(images[1]) + '"' : '') + '>' : "";
+  const isPoster = item.type !== "characters" && images.length;
+  return '<div class="cover-art ' + escapeHtml(size) + (images.length ? ' cover-art--has-photo' : '') +
+    (isPoster ? ' cover-art--poster' : '') + '" style="--cover:' + escapeHtml(color) + '">' +
     image + '<span class="cover-dots"></span><span class="cover-ring"></span><span class="cover-symbol">' +
     escapeHtml(tag) + '</span><span class="cover-kicker">' + escapeHtml(label) +
     '</span><span class="cover-slash" aria-hidden="true"></span></div>';

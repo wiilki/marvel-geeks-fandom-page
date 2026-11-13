@@ -1,7 +1,8 @@
 import {
   fetchIssues,searchIssues,fetchIssueDetail,fetchSeriesIssues,fetchCreatorIssues,
-  API_ORIGIN
+  API_ORIGIN,coverImageUrl
 } from "./marvel-api.js";
+import { curatedComicCovers } from "./story-images.js";
 
 /**
  * UI for the optional, independent live comic metadata index.
@@ -33,6 +34,78 @@ let active = null;
 let serial = 0;
 let detailSerial = 0;
 let priorFocus = null;
+
+/**
+ * The listing API returns summary rows without cover art. Reuse verified
+ * editorial covers immediately, then fetch metadata only for visible cards.
+ * Capped at 24 detail requests/minute with at most 3 concurrent requests;
+ * avoids a fan site's browser flooding the community API.
+ */
+const knownIssueCovers = new Map(Object.values(curatedComicCovers)
+  .map(x=>[x.apiId,coverImageUrl(x.cover)]).filter(([,image])=>Boolean(image)));
+const coverCache = new Map();
+const coverPending = new Set();
+const coverInflight = new Set();
+const coverRecent = [];
+const COVER_LIMIT_PER_MINUTE = 24;
+const COVER_CONCURRENCY = 3;
+let coverObserver = null;
+
+function coverFor(id) {
+  return knownIssueCovers.get(id) || coverCache.get(id) || null;
+}
+function coverImg(url) {
+  return '<img class="api-cover-photo" src="'+escapeHtml(url)+
+    '" alt="" decoding="async" loading="lazy" referrerpolicy="no-referrer">';
+}
+function updateCardCover(id,url) {
+  if (!url)return;
+  for (const button of grid.querySelectorAll('[data-api-open="'+id+'"]')) {
+    const area=button.querySelector(".api-issue-cover");
+    if (area && !area.querySelector("img")) area.insertAdjacentHTML("beforeend",coverImg(url));
+  }
+}
+function flushCoverQueue() {
+  const now=Date.now();
+  while (coverRecent.length && now-coverRecent[0]>=60000) coverRecent.shift();
+  while (coverPending.size && coverInflight.size<COVER_CONCURRENCY &&
+         coverRecent.length<COVER_LIMIT_PER_MINUTE) {
+    const id=coverPending.values().next().value;
+    coverPending.delete(id);
+    if (coverCache.has(id) || knownIssueCovers.has(id) || coverInflight.has(id)) continue;
+    coverRecent.push(Date.now());
+    coverInflight.add(id);
+    fetchIssueDetail(id).then(issue=>{
+      coverCache.set(id,issue.image || null);
+      updateCardCover(id,issue.image);
+    }).catch(()=>{coverCache.set(id,null);})
+      .finally(()=>{coverInflight.delete(id);flushCoverQueue();});
+  }
+}
+function observeVisibleCovers() {
+  coverObserver?.disconnect();
+  coverPending.clear();
+  const buttons=[...grid.querySelectorAll("[data-api-open]")].filter(button=>{
+    const id=Number(button.dataset.apiOpen);
+    return Number.isSafeInteger(id) && !coverFor(id) && !coverCache.has(id) && !coverInflight.has(id);
+  });
+  if (!buttons.length)return;
+  if (typeof IntersectionObserver!=="function") {
+    for (const button of buttons.slice(0,6)) coverPending.add(Number(button.dataset.apiOpen));
+    flushCoverQueue();return;
+  }
+  coverObserver=new IntersectionObserver(entries=>{
+    for (const entry of entries) {
+      if (!entry.isIntersecting)continue;
+      coverObserver?.unobserve(entry.target);
+      const id=Number(entry.target.dataset.apiOpen);
+      if (Number.isSafeInteger(id) && id>0 && !coverFor(id) && !coverCache.has(id)) coverPending.add(id);
+    }
+    flushCoverQueue();
+  },{rootMargin:"240px 0px",threshold:0.01});
+  for(const button of buttons)coverObserver.observe(button);
+}
+
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -93,7 +166,8 @@ function renderCards() {
       '<button type="button" class="api-issue-open" data-api-open="' + issueId +
       '" aria-label="Open comic ' + escapeHtml(issue.title) + '">' +
       '<div class="api-issue-cover" aria-hidden="true"><span>MARVEL</span><strong>COMICS</strong>' +
-      '<small>ISSUE #' + escapeHtml(issue.issueNumber || String(issueId)) + '</small></div>' +
+      '<small>ISSUE #' + escapeHtml(issue.issueNumber || String(issueId)) + '</small>' +
+      (coverFor(issueId) ? coverImg(coverFor(issueId)) : "") + '</div>' +
       '<div class="api-issue-text"><span class="eyebrow">COMIC METADATA · ' + escapeHtml(year) + '</span>' +
       '<strong>' + escapeHtml(issue.title) + '</strong><p>' +
       escapeHtml(issue.seriesName || "Marvel Comics issue") +
@@ -109,6 +183,7 @@ function renderCards() {
     "No matching comic issues were returned by this source.";
   more.hidden = !hasMore || savedMode || Boolean(currentView);
   updateBookmarkLabel();
+  observeVisibleCovers();
 }
 function setLoading(message) {
   status.textContent = message;
@@ -261,9 +336,9 @@ function showDetail(issue) {
     '<button type="button" class="api-series-link" data-api-series="' + issue.seriesId + '" data-api-label="' +
     escapeHtml(issue.seriesName || "Series " + issue.seriesId) + '">Browse ' +
     escapeHtml(issue.seriesName || "this series") + ' →</button></div>' : "";
-  const picture = issue.image ? '<img class="api-detail-cover" alt="Cover of ' + escapeHtml(issue.title) +
-    '" src="' + escapeHtml(issue.image) + '" loading="lazy" referrerpolicy="no-referrer">' :
-    '<div class="api-detail-cover-placeholder" aria-hidden="true"><span>MARVEL</span><strong>COMICS</strong></div>';
+  const picture = '<div class="api-detail-cover-placeholder" aria-hidden="true"><span>MARVEL</span><strong>COMICS</strong></div>' +
+    (issue.image ? '<img class="api-detail-cover" alt="Cover of ' + escapeHtml(issue.title) +
+    '" src="' + escapeHtml(issue.image) + '" loading="lazy" referrerpolicy="no-referrer">' : "");
   detailBody.innerHTML = '<div class="detail-layout api-detail-layout"><div class="api-detail-art">' +
     picture + '</div><div class="detail-copy"><span class="eyebrow">UNOFFICIAL COMICS METADATA / ISSUE #' + issue.id +
     '</span><h2 id="detailTitle">' + escapeHtml(issue.title) + '</h2><p class="detail-lede">' +

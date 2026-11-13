@@ -69,3 +69,19 @@
  .api-source {min-width:0;width:100%;}
  .api-topbar h4 {font-size:19px;}
 }
+
+
+/* Real cover art for the expanded community comics index. The issue summary
+ * endpoint omits covers, so the site fills them in only for visible cards,
+ * under a strict request budget. Placeholder art remains underneath. */
+.api-issue-cover {aspect-ratio:2/3;}
+.api-issue-cover .api-cover-photo {
+  position:absolute;inset:0;width:100%;height:100%;z-index:3;
+  object-fit:cover;object-position:center top;
+  border:0;background:#171b2b;
+}
+.api-issue-cover .api-cover-photo[hidden] {display:none!important;}
+.api-detail-art > .api-detail-cover,
+.api-detail-art > .api-detail-cover-placeholder {grid-area:1 / 1;}
+.api-detail-art > .api-detail-cover {position:relative;z-index:1;}
+.api-detail-art > .api-detail-cover[hidden] {display:none!important;}

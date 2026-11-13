@@ -21,6 +21,36 @@ A complete, no-build rewrite of the original Marvel Geeks project. Explore a cur
 
 
 
+### Movie posters and comic issue covers
+
+The starter archive's **18 films** now use real movie poster URLs from MCUAPI's
+public GitHub dataset, matched by exact MCUAPI record ID and release year.
+Its **24 editorial comics** use real issue cover URLs from the community
+[Marvel Metadata API](https://github.com/emreparker/marvel-comics).
+Matching was checked against issue numbers, titles and original publication
+years—including older series whose names changed and the 2008 **Old Man Logan**
+storyline, which starts at **Wolverine (2003) #66**, not **Old Man Logan (2015) #1**.
+
+These lookups are stored as a small, deterministic **URL/ID metadata mapping**
+in src/story-images.js. No poster or cover binary is copied into GitHub, no
+new API key is needed, and the site remains a static free GitHub Pages app.
+Cards show the appropriate portrait-oriented poster/cover, and the larger
+detail dialog shows the full image. If an image fails, the original graphic
+fallback remains visible.
+
+The expanded comics index also shows known editorial covers immediately. For
+unmapped issue summaries, the comics API does not include cover images, so the
+site requests details **only for cards near the viewport**, with at most 3
+concurrent requests and 24 image lookups per minute. A card may show the
+fallback until you scroll it into view, and may remain a placeholder if the
+provider is unavailable or the safety budget is exhausted; opening a comic's
+detail dialog always performs the normal detail lookup.
+
+Artwork is externally hosted and remains subject to the copyright and usage
+rules of its owners. The MIT licenses of any API code do **not** grant a license
+to Marvel's copyrighted art or film poster images. This independent fan site
+does not claim affiliation with Marvel or Disney.
+
 ### Character portraits
 
 The original 24 curated character cards (including the Featured Heroes row and full

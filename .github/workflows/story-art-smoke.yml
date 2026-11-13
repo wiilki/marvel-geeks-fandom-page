@@ -1,0 +1,18 @@
+name: Movie and comic artwork availability
+on:
+  pull_request:
+    paths:
+      - 'src/story-images.js'
+      - 'tests/story-art-smoke.py'
+      - '.github/workflows/story-art-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  art:
+    name: Check real poster and comic cover URLs
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tests/story-art-smoke.py
