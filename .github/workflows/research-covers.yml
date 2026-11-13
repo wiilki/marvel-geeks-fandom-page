@@ -1,0 +1,17 @@
+name: Editorial comic cover evidence (research)
+on:
+  pull_request:
+    paths:
+      - 'scripts/research_covers.py'
+      - '.github/workflows/research-covers.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Match comic-issue covers without copying artwork
+        run: python3 -u scripts/research_covers.py
