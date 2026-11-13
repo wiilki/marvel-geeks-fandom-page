@@ -1,17 +1,16 @@
-name: Verify missing editorial comic covers
+name: Verify Ms Marvel 2014 cover (research)
 on:
   pull_request:
     paths:
-      - 'scripts/research_remaining_covers.py'
+      - 'scripts/probe_ms_marvel.py'
       - '.github/workflows/research-covers.yml'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  verify:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 2
     steps:
       - uses: actions/checkout@v4
-      - name: Verify missing comic issue identities and fetch covers
-        run: python3 -u scripts/research_remaining_covers.py
+      - run: python3 -u scripts/probe_ms_marvel.py
