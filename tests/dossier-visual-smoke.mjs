@@ -69,7 +69,7 @@ try{
   await detail.locator('iframe[data-official-voice]').waitFor({state:"attached"});
   await page.keyboard.press("Escape");
   assert.equal(await detail.evaluate(el=>el.open),false);
-  assert.equal(await detail.locator('iframe[data-official-voice]').count(),0);
+  await detail.locator('iframe[data-official-voice]').waitFor({state:"detached",timeout:3000});
 
   const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:"reduce"});
   await mobile.goto(base,{waitUntil:"domcontentloaded"});

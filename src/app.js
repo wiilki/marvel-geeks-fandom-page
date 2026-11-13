@@ -207,7 +207,7 @@ function backToDossier() {
   const key=dossierHistory.pop();
   openDetail(key,{fromHistory:true});
 }
-function closeDetail() { const dialog = $("#detailDialog"); if (dialog.open) dialog.close(); }
+function closeDetail() { const dialog = $("#detailDialog"); if (dialog.open) { stopOfficialVoiceVideo($("#detailBody")); dialog.close(); } }
 function toggleFavorite(key) {
   if (!byKey.has(key)) return;
   if (state.favorites.has(key)) state.favorites.delete(key); else state.favorites.add(key);
@@ -321,6 +321,7 @@ $("#sortSelect").addEventListener("change",event => { state.sort = event.target.
 $("#detailDialog").addEventListener("click",event => {
   if (event.target === $("#detailDialog")) closeDetail();
 });
+$("#detailDialog").addEventListener("cancel",() => stopOfficialVoiceVideo($("#detailBody")));
 $("#detailDialog").addEventListener("close",() => { stopOfficialVoiceVideo($("#detailBody"));dossierHistory.length=0;delete $("#detailBody").dataset.curatedKey;lastFocused?.focus?.();lastFocused=null; });
 document.addEventListener("keydown",event => {
   if (event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey &&

@@ -122,6 +122,8 @@ test("content security and dialog shutdown prevent hidden audio",()=>{
   assert.ok(app.includes("playOfficialVoiceVideo"));
   assert.ok(app.includes('target.hasAttribute("data-voice-preview")'));
   assert.ok(app.includes('stopOfficialVoiceVideo($("#detailBody"))'));
+  assert.ok(app.includes('addEventListener("cancel",() => stopOfficialVoiceVideo($("#detailBody")))'));
+  assert.ok(app.includes('stopOfficialVoiceVideo($("#detailBody")); dialog.close()'));
   assert.ok(app.includes("getCharacterVoicePreview(item.id)"));
   assert.ok(css.includes(".official-voice-player"));
   assert.ok(css.includes(".card-voice-marker"));
