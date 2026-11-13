@@ -51,7 +51,7 @@ try{
   }));
   assert.ok(boxStyle.height>250 && boxStyle.height<700);
   assert.equal(boxStyle.minHeight,"0px");
-  assert.match(boxStyle.objectPosition,/top/);
+  assert.match(boxStyle.objectPosition,/(?:top|0%)$/,"Browser may normalize center top to 50% 0%");
   const savedFrame=await frame.elementHandle();
   await detail.locator('[data-favorite="characters:iron-man"]').click();
   assert.ok(await savedFrame.evaluate(el=>el.isConnected),"Toggling save should not restart an active video");
