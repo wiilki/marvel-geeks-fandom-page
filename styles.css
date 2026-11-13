@@ -408,3 +408,67 @@ svg { width:1.1em;height:1.1em; flex-shrink:0; }
   .voice-preview-note {font-size:11px;}
   .official-voice-player {min-height:155px;}
 }
+
+/* Detail portrait bug fix: the previous 100%-height sticky art stretched to
+ * the full length of the right-hand dossier, putting the photo mid-column.
+ * Keep the entire cover in a bounded frame anchored at the top instead. */
+.dossier-layout {align-items:start;}
+.dossier-layout > .cover-art--detail {
+  width:100%;
+  height:auto;
+  min-height:0;
+  aspect-ratio:3 / 4;
+  max-height:min(76dvh,680px);
+  position:sticky;
+  top:0;
+  align-self:start;
+}
+.dossier-layout > .cover-art--detail.cover-art--has-photo .cover-photo,
+.dossier-layout > .cover-art--detail.cover-art--poster .cover-photo {
+  object-position:center top;
+}
+/* Keep the YouTube player/branding intact while removing our repetitive
+ * captions, headings and explanation text around it. */
+.dossier-copy .official-voice-preview {
+  margin:16px 0 24px;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+.official-voice-preview .voice-preview-mount {min-height:0;}
+.official-voice-preview .voice-preview-source {
+  display:inline-block;
+  margin-top:9px;
+  color:#e8b982;
+  font-size:11px;
+  line-height:1.5;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.official-voice-preview .official-voice-player {
+  width:100%;
+  min-height:200px;
+  aspect-ratio:16 / 9;
+  border-radius:9px;
+  background:#080b14;
+}
+@media(max-width:800px){
+  .dossier-layout > .cover-art--detail,
+  .dossier-layout > .cover-art--detail.cover-art--poster {
+    position:relative;
+    top:auto;
+    width:100%;
+    height:min(64vw,360px);
+    max-height:360px;
+    min-height:0;
+    aspect-ratio:auto;
+  }
+}
+@media(max-width:550px){
+  .dossier-layout > .cover-art--detail,
+  .dossier-layout > .cover-art--detail.cover-art--poster {
+    height:min(78vw,320px);
+    max-height:320px;
+  }
+  .official-voice-preview .official-voice-player {min-height:200px;}
+}

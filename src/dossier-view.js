@@ -43,18 +43,17 @@ function voicePreviewSection(item) {
   const clip=getCharacterVoicePreview(item.id);
   if (!clip)return "";
   const source=officialVideoUrl(clip);
-  return '<section class="detail-section official-voice-preview" aria-label="Official Marvel character performance">'+
-    '<div class="voice-preview-heading"><span class="voice-preview-symbol" aria-hidden="true">▶</span>'+
-    '<div><h3>HEAR THE CHARACTER IN ACTION</h3>'+
-    '<p>Original movie or television performance · official Marvel Entertainment video</p></div></div>'+
-    '<strong class="voice-preview-title">'+escapeHtml(clip.title)+'</strong>'+
-    '<p class="voice-preview-note">'+escapeHtml(clip.note)+'</p>'+
+  // The normal YouTube player provides the video title, channel attribution
+  // and controls. Avoid duplicating them with a large explanatory wrapper.
+  // This play button is retained for internal dossier links where a visitor
+  // has not explicitly selected an "Open & Play" archive card.
+  return '<section class="official-voice-preview" aria-label="Official Marvel Entertainment video featuring '+escapeHtml(item.title)+'">'+
     '<div class="voice-preview-mount" data-official-voice-mount>'+
       '<button type="button" class="voice-preview-play" data-voice-preview="'+escapeHtml(item.id)+'">'+
-      '▶ Play official video clip</button>'+
+      '▶ Play official scene</button>'+
     '</div>'+
-    '<p class="voice-preview-legal">Video and sound stay together in YouTube’s visible player. No audio file is hosted, downloaded or extracted by Marvel Geeks. Playback is optional and may depend on YouTube availability. <a href="'+escapeHtml(source)+
-    '" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></p>'+
+    '<a class="voice-preview-source" href="'+escapeHtml(source)+
+    '" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>'+
   '</section>';
 }
 

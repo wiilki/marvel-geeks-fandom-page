@@ -32,18 +32,20 @@ test("only explicitly vetted, official-channel scene URLs are permitted",()=>{
   assert.equal(officialEmbedUrl({id:"GyQVFOTmSC0",channel:"Impersonator"}),null);
 });
 
-test("only the ten mapped character dossiers offer an explicit play button",()=>{
+test("only mapped character dossiers provide a compact official video player and fallback",()=>{
   for (const c of characters) {
     const html=buildCuratedDossier(byId("characters",c.id),{art});
     const has=!!getCharacterVoicePreview(c.id);
     assert.equal(html.includes('data-voice-preview="'+c.id+'"'),has,c.id);
-    assert.equal(html.includes("HEAR THE CHARACTER IN ACTION"),has,c.id);
+    assert.equal(html.includes("HEAR THE CHARACTER IN ACTION"),false,c.id);
     assert.equal(html.includes("youtube-nocookie.com"),false,
-      "No embedded player should load until visitor explicitly plays");
+      "The player is created after the user selects a clearly marked card");
     if(has){
-      assert.ok(html.includes("Play official video clip"));
+      assert.ok(html.includes("Play official scene"));
       assert.ok(html.includes("Watch on YouTube"));
-      assert.ok(html.includes("Video and sound stay together"));
+      assert.ok(html.includes("data-official-voice-mount"));
+      assert.ok(!html.includes("voice-preview-legal"));
+      assert.ok(!html.includes("voice-preview-heading"));
     }
   }
   for(const item of [...comics,...movies]){
@@ -69,7 +71,7 @@ test("play control creates a visible official video iframe; stopping removes it"
   assert.equal(frame.dataset.officialVoice,"true");
   assert.ok(frame.title.includes("Marvel Entertainment"));
   assert.ok(frame.src.startsWith("https://www.youtube-nocookie.com/embed/GyQVFOTmSC0?"));
-  assert.ok(frame.src.includes("autoplay=1"),"Autoplay only after pressing the play button");
+  assert.ok(frame.src.includes("autoplay=1"),"Request autoplay on an explicit Open & Play click or the player button");
   assert.ok(frame.allow.includes("autoplay"));
   assert.equal(frame.allowFullscreen,true);
   stopOfficialVoiceVideo(body);
@@ -82,6 +84,35 @@ test("play control creates a visible official video iframe; stopping removes it"
     "A stale button cannot activate another character's scene");
 });
 
+
+test("opening a mapped card explicitly requests visible autoplay without another play click",()=>{
+  const app=repoFile("src/app.js");
+  const css=repoFile("styles.css");
+  const dossier=repoFile("src/dossier-view.js");
+  assert.ok(app.includes('data-autoplay-scene="true"'),
+    "Only characters with official clips receive an autoplay-consent card");
+  assert.ok(app.includes("OPEN & PLAY SCENE"));
+  assert.ok(app.includes("VIDEO PLAYS ON OPEN"));
+  assert.ok(app.includes("play an official Marvel video"));
+  assert.ok(app.includes('autoPlayScene:target.dataset.autoplayScene==="true"'),
+    "The user's card click must explicitly opt into playback");
+  assert.ok(app.includes('if (autoPlayScene && item.type==="characters") playOfficialVoiceVideo(detailBody,item.id);'),
+    "Insert iframe during the same user activation, after opening dialog");
+  assert.ok(app.includes('if (button)button.textContent=state.favorites.has(key)'),
+    "Saving a favorite should not restart or close a playing video");
+  assert.ok(dossier.includes("Watch on YouTube"));
+  assert.ok(!dossier.includes("HEAR THE CHARACTER IN ACTION"));
+  assert.ok(!dossier.includes("Video and sound stay together"));
+  assert.ok(!dossier.includes("Original movie or television performance"));
+  assert.ok(!dossier.includes("voice-preview-title"));
+  assert.ok(css.includes(".dossier-layout > .cover-art--detail"));
+  assert.ok(css.includes("max-height:min(76dvh,680px)"));
+  assert.ok(css.includes("height:auto"));
+  assert.ok(css.includes("object-position:center top"));
+  assert.ok(css.includes(".voice-preview-source"));
+  assert.ok(css.includes("min-height:200px"));
+});
+
 test("content security and dialog shutdown prevent hidden audio",()=>{
   const html=repoFile("index.html");
   const app=repoFile("src/app.js");
@@ -91,6 +122,8 @@ test("content security and dialog shutdown prevent hidden audio",()=>{
   assert.ok(app.includes("playOfficialVoiceVideo"));
   assert.ok(app.includes('target.hasAttribute("data-voice-preview")'));
   assert.ok(app.includes('stopOfficialVoiceVideo($("#detailBody"))'));
+  assert.ok(app.includes('addEventListener("cancel",() => stopOfficialVoiceVideo($("#detailBody")))'));
+  assert.ok(app.includes('stopOfficialVoiceVideo($("#detailBody")); dialog.close()'));
   assert.ok(app.includes("getCharacterVoicePreview(item.id)"));
   assert.ok(css.includes(".official-voice-player"));
   assert.ok(css.includes(".card-voice-marker"));

@@ -1,0 +1,28 @@
+name: Character dossier visual smoke
+on:
+  pull_request:
+    paths:
+      - 'src/app.js'
+      - 'src/dossier-view.js'
+      - 'src/official-voice-player.js'
+      - 'styles.css'
+      - 'tests/dossier-visual-smoke.mjs'
+      - '.github/workflows/dossier-browser-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  desktop-mobile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser test dependency
+        run: npm install --no-save --no-package-lock playwright@1.56.1
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Verify actual rendered portrait and YouTube player behavior
+        run: node tests/dossier-visual-smoke.mjs
