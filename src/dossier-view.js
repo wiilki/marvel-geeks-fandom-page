@@ -7,6 +7,7 @@ import {getDossierNote,dossierFacts,dossierConnections} from "./dossier-data.js"
 import {curatedMoviePosters,curatedComicCovers} from "./story-images.js";
 import {loadUniverse} from "./universe-api.js";
 import {fetchIssueDetail} from "./marvel-api.js";
+import {getCharacterVoicePreview,officialVideoUrl} from "./character-voice-clips.js";
 
 function escapeHtml(raw) {
   return String(raw ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
@@ -37,6 +38,26 @@ function highlight(item) {
   return item.phase+" · "+item.year;
 }
 
+function voicePreviewSection(item) {
+  if (item.type!=="characters")return "";
+  const clip=getCharacterVoicePreview(item.id);
+  if (!clip)return "";
+  const source=officialVideoUrl(clip);
+  return '<section class="detail-section official-voice-preview" aria-label="Official Marvel character performance">'+
+    '<div class="voice-preview-heading"><span class="voice-preview-symbol" aria-hidden="true">▶</span>'+
+    '<div><h3>HEAR THE CHARACTER IN ACTION</h3>'+
+    '<p>Original movie or television performance · official Marvel Entertainment video</p></div></div>'+
+    '<strong class="voice-preview-title">'+escapeHtml(clip.title)+'</strong>'+
+    '<p class="voice-preview-note">'+escapeHtml(clip.note)+'</p>'+
+    '<div class="voice-preview-mount" data-official-voice-mount>'+
+      '<button type="button" class="voice-preview-play" data-voice-preview="'+escapeHtml(item.id)+'">'+
+      '▶ Play official video clip</button>'+
+    '</div>'+
+    '<p class="voice-preview-legal">Video and sound stay together in YouTube’s visible player. No audio file is hosted, downloaded or extracted by Marvel Geeks. Playback is optional and may depend on YouTube availability. <a href="'+escapeHtml(source)+
+    '" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></p>'+
+  '</section>';
+}
+
 /** Returns safe static markup; only authored strings and escaped catalog data. */
 export function buildCuratedDossier(item,{saved=false,art}={}) {
   if (!item || !["characters","movies","comics"].includes(item.type) || typeof art!=="function")
@@ -56,6 +77,7 @@ export function buildCuratedDossier(item,{saved=false,art}={}) {
     '<h2 id="detailTitle">'+escapeHtml(item.title)+'</h2>'+
     '<p class="dossier-subtitle">'+escapeHtml(highlight(item))+'</p>'+
     '<p class="detail-lede">'+escapeHtml(item.summary)+'</p>'+
+    voicePreviewSection(item)+
     '<section class="dossier-story" aria-label="Explore this story"><h3>THE STORY SO FAR</h3>'+
     '<p>'+escapeHtml(notes||item.summary)+'</p></section>'+
     '<dl class="fact-grid dossier-facts">'+facts.map(([name,value])=>fact(name,value)).join("")+'</dl>'+
