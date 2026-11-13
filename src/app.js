@@ -1,6 +1,7 @@
 import { allItems, byKey, characters, comics, movies, featuredIds, findCharacter } from "./catalog.js";
 import { syncComicsBrowser } from "./live-comics.js";
 import { syncUniverseBrowser } from "./universe-browser.js";
+import { portraitUrlsForCharacter } from "./character-images.js";
 
 const $ = selector => document.querySelector(selector);
 const storageKey = "marvel-geeks-favorites-v2";
@@ -79,8 +80,15 @@ function art(item, size="") {
   const color = item.color || (item.type === "movies" ? "#d8a35c" : "#bd8bca");
   const tag = item.type === "characters" ? (item.mark || item.name.slice(0,2)) : item.type === "movies" ? "FILM" : "ISSUE";
   const label = item.type === "characters" ? item.name : (item.type === "movies" ? "MARVEL CINEMA" : "THE COMIC ARCHIVE");
-  return '<div class="cover-art ' + escapeHtml(size) + '" style="--cover:' + escapeHtml(color) + '">' +
-    '<span class="cover-dots"></span><span class="cover-ring"></span><span class="cover-symbol">' +
+  const portraits = item.type === "characters" ? portraitUrlsForCharacter(item.id) : [];
+  const image = portraits.length ?
+    '<img class="cover-photo" src="' + escapeHtml(portraits[0]) +
+    '" alt="' + (size === "cover-art--detail" ? escapeHtml("Portrait of " + item.name) : "") +
+    '" ' + (size === "cover-art--detail" ? 'fetchpriority="high"' : 'loading="lazy"') +
+    ' decoding="async" referrerpolicy="no-referrer"' +
+    (portraits[1] ? ' data-image-fallback="' + escapeHtml(portraits[1]) + '"' : '') + '>' : "";
+  return '<div class="cover-art ' + escapeHtml(size) + (portraits.length ? ' cover-art--has-photo' : '') + '" style="--cover:' + escapeHtml(color) + '">' +
+    image + '<span class="cover-dots"></span><span class="cover-ring"></span><span class="cover-symbol">' +
     escapeHtml(tag) + '</span><span class="cover-kicker">' + escapeHtml(label) +
     '</span><span class="cover-slash" aria-hidden="true"></span></div>';
 }
@@ -237,6 +245,22 @@ function scheduleLiveLookup() {
     }
   },600);
 }
+
+// External portraits may disappear. Try the other vetted API, then reveal the
+// existing CSS artwork instead of leaving a broken-image icon.
+document.addEventListener("error",event => {
+  const image = event.target;
+  if (!(image instanceof HTMLImageElement)) return;
+  const fallback = image.dataset.imageFallback;
+  if (fallback && !image.dataset.fallbackTried) {
+    image.dataset.fallbackTried = "true";
+    image.removeAttribute("data-image-fallback");
+    image.src = fallback;
+    return;
+  }
+  image.hidden = true;
+  image.closest(".cover-art--has-photo")?.classList.add("cover-art--image-failed");
+},true);
 
 document.addEventListener("click",event => {
   const target = event.target.closest("button");
